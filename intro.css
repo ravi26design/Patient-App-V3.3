@@ -54,3 +54,4 @@ html[data-theme="dark"] .phone.on-intro>*{filter:none}
 #v-onb .onb2 .foot-row.onb-foot2 button.btn{background:#fff!important;color:#23282F!important}
 #v-onb .onb2,#v-onb .intro{touch-action:pan-y;user-select:none;-webkit-user-select:none}
 #v-onb .onb2 .onb-img img{-webkit-user-drag:none;pointer-events:none}
+.intro-word,#v-onb .onb2 .onb-top .intro-word{font-size:24px!important}

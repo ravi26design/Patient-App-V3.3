@@ -286,13 +286,13 @@ function walletRows() {
 function rwCards() {
   const days = weekDays(0), has = (d, re) => S.txns.some(x => x.d === d && re.test(x.t));
   const st = days.map(x => { if (x.now) { const f = has(x.d, /^Daily Reflection/) && has(x.d, /^Activity/); return { full: f, half: !f && (has(x.d, /^Daily Reflection/) || has(x.d, /^Activity/)), now: true }; } return x.h ? { full: x.e >= 11, half: x.e < 11 } : { full: false, half: false }; });   // earlier days use the same sample data as the graph below
-  const fulls = st.filter(x => x.full).length, todayAmt = S.txns.filter(x => x.d === today()).reduce((a, x) => a + x.amt, 0), weekAmt = days.reduce((a, x) => a + S.txns.filter(y => y.d === x.d).reduce((b, y) => b + y.amt, 0), 0);
+  const fulls = st.filter(x => x.full || x.half).length, todayAmt = S.txns.filter(x => x.d === today()).reduce((a, x) => a + x.amt, 0), weekAmt = days.reduce((a, x) => a + S.txns.filter(y => y.d === x.d).reduce((b, y) => b + y.amt, 0), 0);
   const loaded = S.loaded || 0, nowI = days.findIndex(x => x.now);
-  return `<div class="rw-visa"><div class="rw-vt"><b>Insights</b><span>VISA</span></div><small>Total Rewards Earned</small><div class="rw-amt">${usd(loaded || S.bucks + 120)}</div>
+  return `<div class="rw-visa"><div class="rw-vt"><b>Insights</b></div><small>Total Rewards Earned</small><div class="rw-amt">${usd(loaded || S.bucks + 120)}</div>
       ${loaded ? `<div class="rw-vb"><span>Last load ${usd(loaded)}</span></div>` : ''}<div class="rw-vchip">Weekly earnings loaded every Monday</div></div>
     <div class="rw-tiles"><div class="rw-t g"><small>Earned today</small><b>${usd(todayAmt)}</b><span>Reflection + activity</span></div><div class="rw-t b"><small>Earned this week</small><b>${usd(weekAmt)}</b><span>Up to ${usd(250)} with the bonus</span></div></div>
-    <div class="rw-week"><div class="rw-wh"><b>This week</b><span>${fulls} of 6 days</span></div>
-      <div class="rw-dots">${st.map((x, i) => { const k = i > nowI || (i === nowI && !x.full && !x.half) ? 'future' : x.full ? 'full' : x.half ? 'half' : 'miss'; return `<div><i class="${k}">${k === 'full' ? ic('check', 18, 3) : ''}</i><span>${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i]}</span></div>`; }).join('')}</div>
+    <div class="rw-week"><div class="rw-wh"><b>This week</b><span>${fulls} of 7 days</span></div>
+      <div class="rw-dots">${st.map((x, i) => { const k = i > nowI || (i === nowI && !x.full && !x.half) ? 'future' : x.full ? 'full' : x.half ? 'half' : 'miss'; return `<div><i class="${k}">${k === 'full' && i === nowI ? ic('check', 18, 3) : ''}</i><span>${['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i]}</span></div>`; }).join('')}</div>
       <p>Blue: reflection + activity · Half: reflection only · Grey: not done · Dotted: still to come</p></div>`;
 }
 function renderWallet() {
