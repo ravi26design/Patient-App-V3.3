@@ -1,0 +1,139 @@
+/* One light outline for every card in the app (loads last; Community has its own rules in community.css) */
+:root{--card-line:#E0EAF4}
+
+/* Home, check-in prompt, result page */
+.oh-score,.oh-next,.rd-card,.rd-cicard,.rr-score,.rr-next,.rr-earn,.rr-reward,.rr-trend,.rd-welcome .rd-card,
+/* activity pages and completion */
+.fx-card,.fx-tile,.fx-week,
+/* Progress */
+.pg-card,.pg-card2,.pg-stats,.pg-stat,.pg-list,.pg-recent .pg-list,.pg-score,.pg-grid>div,
+/* Rewards */
+.rw-visa,.rw-week,.rw-panel,.rw-tiles>div,.rc-tiles>div,.rc-hero,.rc-chart,.wk-card,.wk-tile,
+/* Profile / Me */
+.pf-hero,.pf-card,.pf-list,.pf-row,
+/* Tools and Help */
+.more-row,.promo,.searchbar,.md-opt,.md-911,.ct-row,.cm-card,.empty-card,
+/* Onboarding and settings rows */
+.consent,.med-grid>*,.set-row,.group,.tool-card,.toolcard{border:1px solid var(--card-line)}
+
+/* keep the dark/colour cards readable: the Rudra card and the crisis call keep their own look */
+.rw-visa{border-color:rgba(255,255,255,.18)}
+.md-911{border-color:rgba(255,255,255,.25)}
+/* inner rows that sit inside an outlined card should not double up */
+.pf-list .pf-row,.pg-list .pg-row,.rw-week .rw-dots *{border:0}
+/* check-in answer cards */
+.choice{border:1px solid var(--card-line)}
+.choice.sel{border-color:#6C9FCC}
+
+/* wrappers and inner blocks are not cards: no outline box around them */
+.oh-score,.oh-next,.rr-trend,.rr-arc{border:0!important}
+
+/* divider between the score and the trend */
+.rr-side{border:0!important;border-left:1px solid #E0EAF4!important}
+
+/* page background, a step deeper so the white cards stand out */
+:root{--page-bg:linear-gradient(180deg,#FCF1EC 0%,#F7F6F3 300px,#F7F6F3 100%)}
+.phone,.view,.layer,.setup,.onb2,#v-home,.layer.rd-layer{background:var(--page-bg)!important}
+.md-layer,.zcm-lay{background:var(--page-bg)!important}
+
+/* Home top bar: same colour as the page background */
+#v-home .oh-top{background:#FBF1EC!important}
+
+/* Rewards: very light outline on every card */
+.rw-t.g{border:1px solid #D3E6D8!important}
+.rw-t.b{border:1px solid #D3E2F2!important}
+.rw-visa{border:1px solid rgba(255,255,255,.32)!important}
+.rw-week{border:1px solid #E0EAF4!important}
+
+/* Help: no shadow, a light outline in each card's own tone */
+.md-911,.md-opt,.md-reassure{box-shadow:none!important}
+.md-911{border:1px solid #F0CFC9!important}
+.md-opt.t-r{border:1px solid #F0CFC9!important}
+.md-opt.t-a{border:1px solid #EADDB2!important}
+.md-opt.t-g{border:1px solid #CADFD0!important}
+.md-opt.t-b{border:1px solid #C9DBEE!important}
+.md-reassure{border:1px solid #DCE8F3!important}
+
+/* Profile: only the main cards keep an outline; rows inside them are separated by a plain divider */
+.pf-row,.st-row,.pf-mrow{border:0!important;border-radius:0}
+.pf-row:not(:last-child),.st-row:not(:last-child),.pf-mrow:not(:last-child){border-bottom:1px solid #EEF2F6!important}
+.pf-hero{border:0!important}
+
+/* Profile header: flat, no glow circles */
+.pf-hero::before,.pf-hero::after{display:none!important}
+
+/* What Helps Me: no box around the row, an outline on each card instead */
+.pf-card:has(.pf-help){border:0!important;background:none!important}
+.pf-help>div{border:1px solid #D6E5F4}
+.pf-help>.hp-g{border-color:#C6DFCD}
+.pf-help>.hp-b{border-color:#C6DCF0}
+.pf-help>.hp-a{border-color:#EDDDA9}
+.pf-help>.hp-r{border-color:#F2CDC5}
+
+/* Settings: selected options use the primary CTA colour, no green */
+.st-lang button{box-shadow:none!important;border:1.5px solid #D6E5F4!important}
+.st-lang button.on{background:#6C9FCC!important;border-color:#6C9FCC!important;color:#fff!important}
+
+/* check-in: a clearer progress line and white option cards */
+.pline{height:5px!important;background:#D3DDE8!important}
+.pline>i{height:5px!important;background:#4F82B0!important}
+.choice,.choice.sel{background:#fff!important}
+
+/* check-in: slider cards and substance options are solid white */
+.scard,.sub,.sub.sel{background:#fff!important}
+
+/* HELP button: plus and label centred on both axes */
+.nav .nav-help{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;padding:0!important;text-align:center}
+.nav .nav-help svg{width:24px!important;height:24px!important;flex:none;margin:0!important}
+.nav .nav-help span{width:auto!important;height:auto!important;line-height:1!important;text-align:center;margin:0!important;padding:0 0 0 .06em;display:block}
+
+/* sign-up steps: the Continue button follows the content instead of floating at the very bottom.
+   It is still sticky, so on a long form it stays reachable at the bottom edge. */
+.setup .step-foot,.ob-page .step-foot{margin-top:24px!important}
+.ob-page .pst:not([hidden])::after{height:0!important}
+
+/* activity steps: the text block is plain text, no outline */
+.fx-card{border:0!important}
+
+/* completion page: larger bolt icon in a larger circle */
+.fx-done .fx-tile .fx-tic{width:56px!important;height:56px!important}
+.fx-done .fx-tile .fx-tic svg{width:28px!important;height:28px!important}
+.nav .nav-help span{transform:translateY(-3px)}
+
+/* Desktop demo: true iPhone 15/16 screen (393x852 pt), scaled down to fit short windows */
+@media (min-width:481px){
+  .phone{box-sizing:content-box;width:393px;height:852px;flex:none;border-width:10px;transform:scale(var(--ps,1));transform-origin:center center}
+}
+
+/* Survey slider: smaller score number, more room around it */
+.scard .s-val{font-size:42px!important;line-height:1.1!important;margin:16px 0 22px!important}
+
+/* Home: smaller Recovery Score number and caption */
+.oh-score .rr-num b{font-size:33px!important}
+.oh-score .rr-num small,.oh-score .rr-cap{font-size:11px!important;letter-spacing:.12em!important}
+
+/* Fonts (same system as the reference): Fraunces for page titles, Manrope for bold UI text and buttons, Inter for body */
+:root{--f-disp:'Inter',-apple-system,'Segoe UI',sans-serif;--f-ui:'Manrope','Inter',-apple-system,sans-serif}
+h1,h2,.step-h,.q-text,.oh-hey,.rd-h1,.fx-title,.rr-h1,.tools-head,.wal-top{font-family:'Inter',-apple-system,'Segoe UI',sans-serif!important;font-weight:600!important;letter-spacing:-.01em!important}
+.oh-hey span{font-family:'Inter',-apple-system,'Segoe UI',sans-serif!important;font-weight:600!important}
+h3,b,strong,button,.btn,.rd-cardh,.choice,.pill,.chip{font-family:'Manrope','Inter',-apple-system,sans-serif}
+.btn,.rd-btn,.fx-cta{font-weight:700!important}
+.oh-hey,.oh-hey span{font-size:33px!important;font-weight:600!important;line-height:1.1!important;letter-spacing:-.01em!important;font-optical-sizing:none;font-variation-settings:'opsz' 36}
+.oh-hey,.oh-hey span{color:#26323D!important}
+.scard .s-val{font-size:32px!important;margin:14px 0 20px!important;text-align:center}
+.scard .s-row{display:block!important}.scard .s-row .s-range{width:100%!important}
+
+/* reflection sliders: full round thumb (not clipped by the track height) */
+.scard .s-range{height:40px!important;background:none!important;border-radius:0!important;overflow:visible}
+.scard .s-range::-webkit-slider-runnable-track{height:24px;border-radius:12px;background:linear-gradient(90deg,var(--cta) var(--p,0%),#DCE3E9 var(--p,0%))}
+.scard .s-range::-webkit-slider-thumb{-webkit-appearance:none;box-sizing:border-box;width:36px!important;height:36px!important;margin-top:-6px;border-radius:50%!important;background:#fff!important;border:5px solid var(--cta)!important}
+.scard .s-range::-moz-range-track{height:24px;border-radius:12px;background:#DCE3E9}
+.scard .s-range::-moz-range-progress{height:24px;border-radius:12px;background:var(--cta)}
+.scard .s-range::-moz-range-thumb{box-sizing:border-box;width:36px;height:36px;border-radius:50%;background:#fff;border:5px solid var(--cta)}
+
+/* readability: plain sans headings, slightly looser tracking, medium-strong weight */
+h1,h2,.step-h,.q-text,.oh-hey,.rd-h1,.fx-title,.rr-h1,.tools-head,.wal-top,.rd-cardh{font-family:'Inter',-apple-system,'Segoe UI',sans-serif!important;font-weight:600!important;letter-spacing:-.015em!important;line-height:1.25!important}
+.oh-hey span{font-weight:600!important}
+
+/* selected answer boxes: thinner outline */
+.choice.sel,.sub.sel{box-shadow:none!important;border:1.5px solid #6C9FCC!important}

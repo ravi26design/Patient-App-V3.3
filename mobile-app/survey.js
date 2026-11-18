@@ -1,0 +1,291 @@
+/* Rudra Health — daily reflection survey (9 screens) + scoring
+   1 medication yesterday · 2 past 24 hours · 3 emotions · 4 body · 5 next week · 6 unreported use (+dates) · 7 substances.
+   Every screen is worth 100/7 ≈ 14.3 points; the speedometer at the top climbs to the final score (0–100). */
+'use strict';
+
+/* Strengths shown on the score screen (0–10 each, higher is better) — derived from the survey answers */
+const Q = [
+  { k: 'meds', label: 'Medication' }, { k: 'cravings', label: 'Craving Control' }, { k: 'risk', label: 'Staying Safe' },
+  { k: 'stress', label: 'Stress Management' }, { k: 'emotions', label: 'Emotional Balance' },
+  { k: 'body', label: 'Sleep & Body' }, { k: 'drive', label: 'Motivation & Confidence' }
+];
+const REC = { meds: 'mindful', cravings: 'urge', risk: 'grounding', stress: 'breath', emotions: 'emotions', body: 'sound', drive: 'quotes' };
+function recommend(vals) {
+  if (!vals) return TOOLS.find(t => t.id === 'breath');
+  const order = Q.map(q => [q, vals[q.k]]).sort((a, b) => a[1] - b[1]);
+  let pick = order[0];
+  if (REC[pick[0].k] === S.lastActivity && order[1] && order[1][1] - pick[1] <= 2) pick = order[1];   // rotate so activities stay fresh
+  return Object.assign({}, TOOLS.find(t => t.id === REC[pick[0].k]), { why: pick[0].label, whyV: pick[1] });
+}
+
+
+/* ═════════ soft flat illustrations for the question cards ═════════ */
+const IL = (inner, bg) => `<svg class="s-il" viewBox="0 0 200 120" width="190" height="114" aria-hidden="true"><defs><clipPath id="ilc"><circle cx="100" cy="60" r="50"/></clipPath></defs><ellipse cx="100" cy="108" rx="62" ry="7" fill="#1F2A37" opacity=".06"/><circle cx="100" cy="60" r="50" fill="${bg}"/>${inner}</svg>`;
+const FACE = (eyes, mouth, extra = '', fill = '#FBE3B8') => `<circle cx="100" cy="60" r="34" fill="${fill}"/>${eyes}${mouth}${extra}`;
+const EYES = '<circle cx="88" cy="55" r="3.6" fill="#3A3F4A"/><circle cx="112" cy="55" r="3.6" fill="#3A3F4A"/>';
+const ILLUS = {
+  craving: IL('<g clip-path="url(#ilc)"><path d="M40 86c14-18 28-18 40 0s26 18 40 0 26-18 40 0v20H40z" fill="#8FB5D8"/><path d="M40 94c14-14 28-14 40 0s26 14 40 0 26-14 40 0v12H40z" fill="#6C9FCC"/></g><path d="M92 62c0-12 8-16 10-26 6 6 14 14 14 26a12 12 0 0 1-24 0z" fill="#F4A58F"/><path d="M99 66c0-6 4-8 5-13 3 3 7 7 7 13a6 6 0 0 1-12 0z" fill="#FBD2A8"/>', '#E5DDF3'),
+  risk: IL('<path d="M100 26l30 10v22c0 20-14 32-30 38-16-6-30-18-30-38V36z" fill="#9CBBE0"/><path d="M100 26l30 10v22c0 20-14 32-30 38z" fill="#7FA6CE"/><rect x="96.5" y="46" width="7" height="22" rx="3.5" fill="#fff"/><circle cx="100" cy="77" r="4" fill="#fff"/>', '#E6EFF8'),
+  stress: IL('<path d="M64 78a16 16 0 0 1 4-31 22 22 0 0 1 42-4 18 18 0 0 1 22 18 14 14 0 0 1-4 17z" fill="#fff"/><path d="M64 78a16 16 0 0 1 4-31 22 22 0 0 1 42-4 18 18 0 0 1 22 18 14 14 0 0 1-4 17z" fill="#C9D8EA" opacity=".7"/><path d="M142 88h24M134 98h30M150 78h14" stroke="#8FB5D8" stroke-width="4" stroke-linecap="round"/>', '#E3ECF6'),
+  pleasant: IL('<circle cx="100" cy="58" r="22" fill="#F6D98B"/><g stroke="#F6D98B" stroke-width="5" stroke-linecap="round"><path d="M100 22v8M100 86v8M64 58h8M128 58h8M74 32l6 6M126 84l6 6M74 84l6-6M126 32l-6 6"/></g><circle cx="92" cy="55" r="2.8" fill="#6B5A2A"/><circle cx="108" cy="55" r="2.8" fill="#6B5A2A"/><path d="M91 65q9 8 18 0" stroke="#6B5A2A" stroke-width="3" fill="none" stroke-linecap="round"/>', '#FBF1D6'),
+  depressed: IL(FACE(EYES, '<path d="M90 76q10-8 20 0" stroke="#3A3F4A" stroke-width="3.4" fill="none" stroke-linecap="round"/>', '<path d="M82 46q6-4 11-1M118 46q-6-4-11-1" stroke="#3A3F4A" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M128 78c4 6 4 10 0 12-4-2-4-6 0-12z" fill="#8FB5D8"/>', '#D7E3F1'), '#E6EDF6'),
+  angry: IL(FACE(EYES, '<path d="M90 76q10-6 20 0" stroke="#3A3F4A" stroke-width="3.4" fill="none" stroke-linecap="round"/>', '<path d="M81 45l14 5M119 45l-14 5" stroke="#3A3F4A" stroke-width="3.4" stroke-linecap="round"/>', '#F6C7BB'), '#F8E6E1'),
+  anxious: IL(FACE(EYES, '<path d="M88 74q4-5 8 0t8 0 8 0" stroke="#3A3F4A" stroke-width="3" fill="none" stroke-linecap="round"/>', '<path d="M126 44c4 6 4 10 0 12-4-2-4-6 0-12z" fill="#8FB5D8"/><path d="M82 46q6-4 11 0M118 46q-6-4-11 0" stroke="#3A3F4A" stroke-width="2.6" fill="none" stroke-linecap="round"/>', '#E3DDF2'), '#EEEAF8'),
+  relaxed: IL(FACE('<path d="M82 56q6 5 12 0M106 56q6 5 12 0" stroke="#3A3F4A" stroke-width="3" fill="none" stroke-linecap="round"/>', '<path d="M91 68q9 7 18 0" stroke="#3A3F4A" stroke-width="3" fill="none" stroke-linecap="round"/>', '<path d="M128 36c10 0 16 6 16 14-10 0-16-6-16-14z" fill="#8DBB9A"/><path d="M128 36c4 4 9 9 16 14" stroke="#6FA37F" stroke-width="2" fill="none"/>', '#DCEBDD'), '#E8F2EA'),
+  happy: IL(FACE(EYES, '<path d="M86 66q14 16 28 0z" fill="#fff" stroke="#3A3F4A" stroke-width="3" stroke-linejoin="round"/>', '<circle cx="80" cy="66" r="5" fill="#F4A58F" opacity=".5"/><circle cx="120" cy="66" r="5" fill="#F4A58F" opacity=".5"/>'), '#FBF1D6'),
+  sleep: IL('<path d="M112 34a26 26 0 1 0 14 46 22 22 0 0 1-14-46z" fill="#C9C3EA"/><path d="M112 34a26 26 0 0 0-4 44 22 22 0 0 1 4-44z" fill="#B3ACDD"/><g fill="#F6D98B"><path d="M138 40l2.6 6 6 2.6-6 2.6-2.6 6-2.6-6-6-2.6 6-2.6z"/><circle cx="68" cy="44" r="3"/><circle cx="144" cy="82" r="2.4"/></g>', '#E9E6F6'),
+  pain: IL('<g transform="rotate(-35 100 60)"><rect x="62" y="46" width="76" height="28" rx="14" fill="#F3C9A6"/><rect x="86" y="46" width="28" height="28" fill="#F0B88C"/><g fill="#E3A57A"><circle cx="96" cy="56" r="1.8"/><circle cx="104" cy="56" r="1.8"/><circle cx="96" cy="64" r="1.8"/><circle cx="104" cy="64" r="1.8"/></g></g><path d="M138 30l-8 14h8l-6 14" stroke="#F4A58F" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>', '#FBEBDD'),
+  motivation: IL('<g clip-path="url(#ilc)"><path d="M52 92l34-44 18 22 12-14 32 36z" fill="#9CBBE0"/><path d="M86 48l18 22 12-14-12-8z" fill="#7FA6CE"/><path d="M86 48l-8 10 8 4 6-6z" fill="#fff"/></g><path d="M118 56V30" stroke="#6B7B8B" stroke-width="3" stroke-linecap="round"/><path d="M118 30l18 6-18 7z" fill="#F4A58F"/>', '#E3ECF6'),
+  confidence: IL('<path d="M100 26l30 10v22c0 20-14 32-30 38-16-6-30-18-30-38V36z" fill="#B9DCC2"/><path d="M100 26l30 10v22c0 20-14 32-30 38z" fill="#9CCBA8"/><path d="M100 44l5.4 11 12 1.7-8.7 8.5 2 12-10.7-5.7-10.7 5.7 2-12-8.7-8.5 12-1.7z" fill="#fff"/>', '#E8F2EA')
+};
+const illus = k => ILLUS[k] || '';
+/* artwork for each question: soft rings in one tone with a simple line icon (style from V3.2) */
+const RQ_TONE = { lav: ['#F1EEF8', '#E2DCF1', '#B9AFDB', '#4B3F8A'], blue: ['#EAF1F8', '#D6E4F0', '#A9C4DE', '#2F5D7C'], sage: ['#EAF2EB', '#D6E7D8', '#A9CBAE', '#2F6B45'],
+  amber: ['#FAF2E2', '#F3E3C2', '#E7C88E', '#86560F'], coral: ['#FBEDEA', '#F5D8D2', '#E9ADA2', '#9A4136'] };
+const RQ_ART = {
+  meds: ['blue', 'pill'], craving: ['lav', 'wave'], risk: ['amber', 'shield'], stress: ['blue', 'wind'], pleasant: ['amber', 'sun'],
+  depressed: ['blue', 'cloud'], angry: ['coral', 'flame'], anxious: ['amber', 'pulse'], relaxed: ['sage', 'leaf'], happy: ['amber', 'smile'],
+  sleep: ['lav', 'moon'], pain: ['coral', 'bolt'], motivation: ['sage', 'rocket'], confidence: ['blue', 'shield'], unreported: ['lav', 'chat'], substances: ['sage', 'checkc']
+};
+function rqArt(k) {
+  const [tone, icon] = RQ_ART[k] || ['blue', 'sparkle'], [a, b, c, d] = RQ_TONE[tone];
+  const g = icon === 'wave' ? '<path d="M-26 0c9-13 17-13 26 0s17 13 26 0" fill="none" stroke-width="5" stroke-linecap="round"/>'
+    : `<g transform="translate(-24 -24) scale(2)" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${P[icon] || P.sparkle || ''}</g>`;
+  return `<svg class="rq-art" viewBox="-100 -100 200 200" aria-hidden="true"><circle r="96" fill="${a}"/><circle r="72" fill="${b}"/><circle class="rq-core" r="50" fill="${c}"/><g stroke="${d}" color="${d}">${g}</g></svg>`;
+}
+
+/* ═════════ the screens ═════════ */
+const sl = (k, q, lo, hi, icon, tone, eLo, eHi, inv) => ({ k, q, lo, hi, icon, tone, eLo, eHi, inv });
+/* related questions clubbed onto one screen */
+/* one question per page: each slider becomes its own screen, keeping the group's context line */
+const grp = (id, ctx, title, sub, ...items) => items.map(it => ({ id: it.k, type: 'sliders', ctx: title.replace(/(past 24 hours|next week|this emotion is right now|right now)/, '<strong>$1</strong>'), title: it.q, sub: '', items: [it] }));
+const SCREENS = [
+  { id: 'meds', type: 'choice' },
+  grp('past-24', 'Past 24 hours', 'Thinking about the past 24 hours…', null,
+    sl('craving', 'Strongest opioid craving?', 'No craving', 'Extreme craving', 'flame', 'coral', '😌', '😖', true),
+    sl('risk', 'Riskiest moment? (people, places, or things that threaten your recovery)', 'No risk', 'Extreme risk', 'alert', 'amber', '😌', '😰', true),
+    sl('stress', 'Most stressful moment?', 'No stress', 'Extreme stress', 'wind', 'blue', '😌', '😩', true),
+    sl('pleasant', 'Most pleasant moment?', 'Not at all pleasant', 'Extremely pleasant', 'sun', 'amber', '😕', '😄', false),
+    sl('sleep', 'Sleep quality?', 'Very poor', 'Excellent', 'moon', 'slate', '😫', '😊', false),
+    sl('pain', 'Worst pain?', 'No pain', 'Worst pain', 'bolt', 'coral', '🙂', '😣', true)),
+  grp('emotions', 'Emotions', 'Rate how strong this emotion is right now', null,
+    sl('depressed', 'Depressed?', 'Not at all', 'Extremely', 'cloud', 'slate', '🙂', '😢', true),
+    sl('angry', 'Angry?', 'Not at all', 'Extremely', 'flame', 'coral', '🙂', '😠', true),
+    sl('anxious', 'Anxious?', 'Not at all', 'Extremely', 'pulse', 'amber', '🙂', '😰', true),
+    sl('relaxed', 'Relaxed?', 'Not at all', 'Extremely', 'leaf', 'green', '😐', '😌', false),
+    sl('happy', 'Happy?', 'Not at all', 'Extremely', 'smile', 'amber', '😐', '😄', false)),
+  grp('outlook', 'Next week', 'Thinking about the next week…', null,
+    sl('motivation', 'Motivation to avoid non-medical opioid use?', 'Not motivated', 'Extremely motivated', 'rocket', 'green', '😐', '🔥', false),
+    sl('confidence', 'Confidence you can?', 'Not confident', 'Extremely confident', 'shield', 'blue', '😟', '😎', false)),
+  { id: 'unreported', type: 'yesno', title: 'Have you used opioids that you didn’t report?' },
+  { id: 'substances', type: 'multi', title: 'Which of these drugs have you used in the past 24 hours?' }
+].flat();
+const MED_OPTS = [['Yes, my full dose', 'checkc'], ['Only part of my dose', 'partial'], ['No, I didn’t take it', 'xc'], ['Medication no longer prescribed', 'info']];
+const SUBS = [['Alcohol', 'beer'], ['Cannabis (marijuana, pot, hash, K2, spice, etc.)', 'leaf'], ['Stimulants (cocaine, meth, speed, ecstasy, molly, Adderall, etc.)', 'bolt'],
+  ['Inhalants (nitrous, glue, petrol, paint thinner, etc.)', 'wind'], ['Sedatives or sleeping pills (Valium, Serepax, Rohypnol, etc.)', 'pill'],
+  ['Hallucinogens (LSD, acid, mushrooms, PCP, special K, etc.)', 'sparkle'], ['7-OH, Kratom, etc.', 'drop'], ['Other', 'more'], ['None - I did not use any substances', 'checkc']];
+const NONE = 'None - I did not use any substances';
+
+/* ═════════ scoring ═════════ */
+const Q_POINTS = 100 / SCREENS.length;
+const L_INT = ['None', 'Mild', 'Moderate', 'Considerable', 'Extreme'], L_NA = ['Not at all', 'Mild', 'Moderate', 'Considerable', 'Extreme'], L_SLEEP = ['Very poor', 'Poor', 'Neutral', 'Good', 'Very good'];
+const LBL = { craving: L_INT, risk: L_INT, stress: L_INT, pleasant: L_INT, pain: L_INT, sleep: L_SLEEP };
+const labelsFor = k => LBL[k] || L_NA;
+const lvl = (a, k) => a[k] != null ? Math.round(a[k] / 2.5) + 1 : 1;   /* 5-point level (1–5); answers are stored on 0–10 so scoring is unchanged */
+const num = (a, k) => a[k] != null ? a[k] : 0;           // sliders start at 0 — the user has to move them
+const inv = v => 10 - v;
+const mean = arr => arr.reduce((x, y) => x + y, 0) / arr.length;
+/* 0..1 for a screen from the current answers, or null while a choice screen is unanswered */
+const ITEMS = () => SCREENS.filter(x => x.items).flatMap(x => x.items);
+function itemScore(k, a) { const it = ITEMS().find(i => i.k === k); if (!it) return null; const v = num(a, k); return (it.inv ? inv(v) : v) / 10; }
+function screenScore(id, a) {
+  const sc = SCREENS.find(x => x.id === id);
+  if (sc && sc.type === 'sliders') return mean(sc.items.map(it => itemScore(it.k, a)));
+  const one = itemScore(id, a); if (one != null) return one;
+  switch (id) {
+    case 'meds': return a.meds == null ? null : [1, .5, 0, 1][a.meds];
+    case 'unreported': return a.unreported == null ? null : a.unreported === 'no' ? 1 : .5;   // disclosing is never punished heavily
+    case 'substances': return !a.subs || !a.subs.length ? null : a.subs.includes(NONE) ? 1 : Math.max(0, 1 - .25 * a.subs.length);
+  }
+}
+/* a screen counts on the speedometer once it's answered (sliders: touched or passed) */
+function counts(s) {
+  if (CI.done[s.id]) return true;
+  return s.type === 'sliders' ? s.items.every(i => CI.touched[i.k]) : screenScore(s.id, CI.a) != null;
+}
+const screenPts = s => counts(s) ? (screenScore(s.id, CI.a) || 0) * Q_POINTS : 0;
+const totalPts = () => SCREENS.reduce((t, s) => t + screenPts(s), 0);
+const finalPts = () => SCREENS.reduce((t, s) => t + (screenScore(s.id, CI.a) || 0) * Q_POINTS, 0);
+function strengthVals(a) {
+  const r = x => Math.round(x * 2) / 2, s6 = screenScore('unreported', a), s7 = screenScore('substances', a);
+  return {
+    meds: r((screenScore('meds', a) || 0) * 10), cravings: r(inv(num(a, 'craving'))),
+    risk: r(mean([inv(num(a, 'risk')), (s6 == null ? 1 : s6) * 10, (s7 == null ? 1 : s7) * 10])),
+    stress: r(inv(num(a, 'stress'))), emotions: r(mean(['depressed', 'angry', 'anxious', 'relaxed', 'happy'].map(k => itemScore(k, a))) * 10), body: r(mean(['sleep', 'pain'].map(k => itemScore(k, a))) * 10), drive: r(mean(['motivation', 'confidence'].map(k => itemScore(k, a))) * 10)
+  };
+}
+
+/* ═════════ speedometer ═════════ */
+const fmt1 = v => (Math.round(v * 10) / 10).toFixed(1).replace(/\.0$/, '');
+const qgCaption = () => {
+  const s = SCREENS[CI.i];
+  return s && counts(s) ? `<b>+${fmt1(screenPts(s))}</b> points from this screen` : `Each screen is worth up to ${fmt1(Q_POINTS)} points`;
+};
+function qGauge() {
+  return '';
+}
+function updateQGauge() { const b = $('#ci-adv', CI.layer); if (b) b.disabled = !screenReady(SCREENS[CI.i]); }
+
+/* ═════════ screen bodies ═════════ */
+const yesterday = () => { const d = new Date(); d.setDate(d.getDate() - 1); return fmtD(d); };
+const medName = () => S.meds.length === 1 ? S.meds[0] : S.meds.length > 1 ? 'medications' : 'medication';
+const lastRaw = () => { const p = S.history[S.history.length - 1]; return p && p.raw ? p.raw : null; };
+const screenTitle = s => s.id === 'meds' ? `Did you take your ${medName()} yesterday (${yesterday()})?` : s.title;
+function screenReady(s) {
+  if (s.type === 'sliders') return s.items.every(i => CI.touched[i.k]);   // must slide (or tap) before continuing
+  if (s.id === 'meds') return CI.a.meds != null;
+  if (s.id === 'unreported') return CI.a.unreported === 'no' || (CI.a.unreported === 'yes' && (CI.a.dates || []).length > 0);
+  return !!(CI.a.subs && CI.a.subs.length);
+}
+function bodyHTML(s) {
+  const raw = lastRaw();
+  if (s.id === 'meds') {
+    return `${raw && raw.meds != null ? `<div class="q-memory">Last time: ${MED_OPTS[raw.meds][0]}</div>` : ''}
+      <div class="choices">${MED_OPTS.map(([l, i], k) => `<button class="choice ${CI.a.meds === k ? 'sel' : ''}" data-act="ci-pick" data-k="${k}"><span class="c-ic">${ic(i, 26, 1.8)}</span><b>${l}</b></button>`).join('')}</div>`;
+  }
+  if (s.type === 'sliders') {
+    return `<div class="scards">${s.items.map(it => {
+      const L = lvl(CI.a, it.k), lab = labelsFor(it.k), last = raw && raw[it.k] != null ? lab[Math.round(raw[it.k] / 2.5)] : null;
+      return `<div class="scard"><div class="rq-mid">${rqArt(it.k)}</div><b class="s-q">${it.q}</b><div class="s-val" id="sv-${it.k}">${lab[L - 1]}</div>
+        <div class="s-row"><input class="s-range" type="range" min="1" max="5" step="1" value="${L}" data-k="${it.k}" data-s="${s.id}" style="--p:${(L - 1) * 25}%" aria-label="${esc(it.q)}"></div>
+        <div class="s-lab"><span>${lab[0]}</span><span>${lab[4]}</span></div>${last != null ? `<div class="s-last">Last time: ${last}</div>` : ''}</div>`;
+    }).join('')}</div>`;
+  }
+  if (s.id === 'unreported') {
+    return `${CI.a.unreported === 'yes' ? '' : `<div class="rq-mid sm">${rqArt('unreported')}</div>`}<div class="yn"><button class="choice ${CI.a.unreported === 'yes' ? 'sel' : ''}" data-act="ci-yn" data-v="yes"><span class="c-ic">${ic('checkc', 26, 1.8)}</span><b>Yes</b></button><button class="choice ${CI.a.unreported === 'no' ? 'sel' : ''}" data-act="ci-yn" data-v="no"><span class="c-ic">${ic('xc', 26, 1.8)}</span><b>No</b></button></div>
+      ${CI.a.unreported === 'yes' ? `<p class="cal-note">Select every date you used in the past 60 days. You can add multiple entries.</p>${calendarHTML()}` : ''}`;
+  }
+  return `<div class="subs">${SUBS.map(([l, i]) => `<button class="sub ${(CI.a.subs || []).includes(l === NONE ? NONE : l) ? 'sel' : ''}" data-act="ci-sub" data-v="${esc(l)}"><span class="c-ic">${ic(i, 24, 1.8)}</span><b>${l}</b><i>${ic('check', 14, 3)}</i></button>`).join('')}</div>
+    <div class="sub-other" id="sub-other" ${(CI.a.subs || []).includes('Other') ? '' : 'hidden'}><input id="sub-other-in" placeholder="Which one? Enter the name" value="${esc(CI.a.other || '')}" autocomplete="off"></div>`;
+}
+
+/* last-7-days calendar for "dates you used" */
+const ymd = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+/* selectable range: the past 60 days, up to today */
+function calRange() { const t = new Date(); t.setHours(12, 0, 0, 0); return { today: t, start: new Date(t.getFullYear(), t.getMonth(), t.getDate() - 60, 12) }; }
+function calendarHTML() {
+  const { today, start } = calRange(), tKey = ymd(today), sKey = ymd(start);
+  if (!CI.cal) CI.cal = { y: today.getFullYear(), m: today.getMonth() };
+  const { y, m } = CI.cal, dim = new Date(y, m + 1, 0).getDate(), lead = new Date(y, m, 1).getDay();
+  const hasPrev = y * 12 + m > start.getFullYear() * 12 + start.getMonth(), hasNext = y * 12 + m < today.getFullYear() * 12 + today.getMonth();
+  const sel = CI.a.dates || [];
+  const cells = [...Array(lead).fill('<i></i>'), ...Array.from({ length: dim }, (_, i) => { const key = `${y}-${String(m + 1).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`, ok = key >= sKey && key <= tKey;
+    return `<button class="cd ${sel.includes(key) ? 'sel' : ''}" ${ok ? `data-act="ci-date" data-d="${key}"` : 'disabled'}>${i + 1}</button>`; })];
+  return `<div class="cal"><div class="cal-h"><button data-act="ci-cal" data-d="-1" ${hasPrev ? '' : 'disabled'} aria-label="Previous month">${ic('back', 18)}</button><b>${new Date(y, m, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</b><button data-act="ci-cal" data-d="1" ${hasNext ? '' : 'disabled'} aria-label="Next month">${ic('next', 18)}</button></div>
+    <div class="cal-w">${['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map(d => `<span>${d}</span>`).join('')}</div><div class="cal-g">${cells.join('')}</div></div>`;
+}
+
+/* ═════════ rendering ═════════ */
+function ciHead(pct, back) {   // prompt screen header
+  return `<div class="layer-top fin-head"><button class="plain-btn" data-act="${back}" aria-label="${back === 'ci-close' ? 'Close' : 'Back'}">${ic(back === 'ci-close' ? 'x' : 'back', 22)}</button><span class="fh-t">Daily Reflection</span><span style="width:40px"></span></div><div class="pline"><i style="width:${pct}%"></i></div>`;
+}
+function surveyHead() {
+  const n = CI.i + 1;
+  return `<div class="layer-top fin-head"><button class="plain-btn" data-act="${CI.i === 0 ? 'ci-exit' : 'ci-prev'}" aria-label="${CI.i === 0 ? 'Close' : 'Back'}">${ic(CI.i === 0 ? 'x' : 'back', 22)}</button>
+    <span class="fh-t">Daily Reflection <small>${n}/${SCREENS.length}</small></span>
+    <span class="fh-r"><button class="plain-btn" data-act="ci-speak" aria-label="Read this screen aloud">${ic('speaker', 22)}</button>${CI.i ? `<button class="plain-btn" data-act="ci-exit" aria-label="Close">${ic('x', 22)}</button>` : ''}</span></div>
+    <div class="pline"><i style="width:${(n / SCREENS.length) * 100}%"></i></div>`;
+}
+function renderCI() {
+  const root = $('#ci-root', CI.layer);
+  CI.layer.classList.remove('indigo'); if (window.speechSynthesis) speechSynthesis.cancel();
+  if (CI.i === -1) { // prompt
+    const prev = S.history[S.history.length - 1];
+    root.innerHTML = `${ciHead(0, 'ci-close')}
+    <div class="q-wrap"><h1 class="q-text" style="margin-top:22px">${greeting()},<br>${esc(S.name || 'friend')}</h1>
+      <p class="q-sub">${prev ? esc(`Last time you scored ${prev.overall}. Your focus area was ${focusArea(prev)} — let’s see how today feels.`) : 'One question at a time — about two minutes. Your answers build your score.'}</p>
+      ${(() => { const base = 10, act = ACT_BONUS[F().level], st = clamp(S.streak + 1, 1, 5), tot = base + act + st, got = checkedInToday();
+        return `<div class="rw-panel"><span class="rw-lab">${got ? 'Already earned today' : 'You can earn today'}</span>
+        <div class="rw-amt">${usd(tot)}</div><p class="rw-note">Added straight to your rewards wallet.</p>
+        <div class="rw-lines">
+          <div><span class="rw-ic">${ic('check', 16, 2.4)}</span><b>Daily Reflection</b><em>+${usd(base)}</em></div>
+          <div><span class="rw-ic">${ic('leaf', 16, 2)}</span><b>Finish an activity</b><em>+${usd(act)}</em></div>
+          <div><span class="rw-ic">${ic('flame', 16, 2)}</span><b>Streak bonus${S.streak ? ` · day ${S.streak + 1}` : ''}</b><em>+${usd(st)}</em></div>
+        </div></div>`; })()}
+      <div style="flex:1;min-height:16px"></div><button class="btn" data-act="ci-next">Let’s begin</button><button class="btn ghost" data-act="ci-close">Maybe later</button></div>`;
+    return;
+  }
+  if (CI.i < SCREENS.length) {
+    const s = SCREENS[CI.i], last = CI.i === SCREENS.length - 1;
+    root.innerHTML = `${surveyHead()}
+    <div class="q-wrap" key="${CI.i}">${s.ctx ? `<div class="q-ctx">${s.ctx}</div>` : ''}<h1 class="q-text">${esc(screenTitle(s))}</h1>${s.sub ? `<p class="q-sub">${esc(s.sub)}</p>` : ''}${bodyHTML(s)}</div>
+    <div class="ci-foot"><button class="btn" id="ci-adv" data-act="ci-adv" ${screenReady(s) ? '' : 'disabled'}>${last ? 'See my score' : 'Next'} ${ic('next', 16, 2.4)}</button></div>`;
+    return;
+  }
+  if (!CI.prepared) { CI.prepared = true; prepScreen(root); return; }
+  renderScore(root);
+}
+/* a short "preparing your report" moment between the last question and the result */
+/* The machine-learning "analysing" screen (now the default) */
+function prepScreenB(root) {
+  const sig = ['Cravings', 'Stress', 'Mood', 'Sleep', 'Pain', 'Energy', 'Confidence'];
+  const layers = [[40, 90, 140, 190], [25, 65, 105, 145, 185], [65, 115, 165], [90, 140]], xs = [26, 96, 164, 234];
+  const lines = []; layers.forEach((a, li) => { if (li < layers.length - 1) a.forEach((y1, i) => layers[li + 1].forEach((y2, j) => lines.push(`<line x1="${xs[li]}" y1="${y1}" x2="${xs[li + 1]}" y2="${y2}" style="--d:${((i * 3 + j * 5 + li * 2) % 9) * .3}s"/>`))); });
+  const nodes = layers.map((a, li) => a.map((y, i) => `<circle cx="${xs[li]}" cy="${y}" r="${li === 0 || li === layers.length - 1 ? 7 : 5.5}" style="--d:${(li * 1.1 + i * .35).toFixed(2)}s"/>`).join('')).join('');
+  root.innerHTML = `<div class="prepb"><h1>Analysing your reflection</h1><p class="pb-sub" id="pb-stage">Reading your 7 signals</p><span class="pb-tag"><i></i>Rudra Insights is analysing</span>
+    <div class="pb-net"><svg viewBox="0 0 260 230" aria-hidden="true"><g class="pb-lines">${lines.join('')}</g><g class="pb-nodes">${nodes}</g><rect class="pb-scan" x="0" y="0" width="38" height="230"/></svg></div>
+    <div class="pb-chips">${sig.map((t, i) => `<span style="--i:${i}">${t}</span>`).join('')}</div>
+    </div>`;
+  CI.layer && (CI.layer.scrollTop = 0);
+  const lay = CI.layer, stages = ['Reading your 7 signals', 'Looking for patterns', 'Comparing with your recent days', 'Weighing what matters most', 'Estimating your Recovery Score', 'Writing your summary'];
+  const t0 = Date.now(), total = 12000, bar = $('#pb-bar', root), pct = $('#pb-pct', root), stg = $('#pb-stage', root), chips = $$('.pb-chips span', root);
+  const tick = setInterval(() => {
+    if (!CI || CI.layer !== lay || !root.isConnected) return clearInterval(tick);
+    const p = Math.min(1, (Date.now() - t0) / total), e = p < .5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2;
+    stg.textContent = stages[Math.min(stages.length - 1, Math.floor(p * stages.length))];
+    chips.forEach((c, i) => c.classList.toggle('on', p > (i + 1) / (chips.length + 1)));
+    if (p >= 1) clearInterval(tick);
+  }, 120);
+  setTimeout(() => { if (CI && CI.layer === lay && CI.prepared && !CI.saved) renderScore(root); }, total + 400);
+}
+function prepScreen(root) {
+  if (new URLSearchParams(location.search).get('prep') !== '1') return prepScreenB(root);   // the analysing screen is the default; ?prep=1 shows the earlier checklist
+  const steps = ['Reviewing your answers', 'Calculating your Recovery Score', 'Comparing with your recent days', 'Spotting what is going well', 'Writing your summary', 'Choosing today’s activity'];
+  root.innerHTML = `<div class="prep"><div class="prep-orb"><svg viewBox="0 0 140 140" aria-hidden="true"><circle class="po-bg" cx="70" cy="70" r="58"/><circle class="po-ring" cx="70" cy="70" r="58"/></svg><span class="po-core">${ic('pulse', 38, 1.8)}</span><i class="po-dot d1"></i><i class="po-dot d2"></i><i class="po-dot d3"></i></div>
+    <h1>Preparing your daily reflection report</h1><p>Just a moment while we put it together for you.</p>
+    <ul class="prep-steps">${steps.map((t, i) => `<li style="--i:${i}"><span class="ps-ck">${ic('check', 14, 3)}</span>${t}</li>`).join('')}</ul></div>`;
+  CI.layer && (CI.layer.scrollTop = 0);
+  const lay = CI.layer;
+  setTimeout(() => { if (CI && CI.layer === lay && CI.prepared && !CI.saved) renderScore(root); }, 12400);
+}
+function advance() {
+  if (!CI) return; const s = SCREENS[CI.i]; if (!screenReady(s)) return;
+  CI.done[s.id] = true; CI.i++; renderCI(); CI.layer.scrollTop = 0;
+}
+function sliderInput(el) {
+  const L = +el.value, k = el.dataset.k; CI.a[k] = (L - 1) * 2.5; CI.touched[k] = true;
+  el.style.setProperty('--p', (L - 1) * 25 + '%'); $('#sv-' + k, CI.layer).textContent = labelsFor(k)[L - 1]; updateQGauge();
+}
+function speakScreen() {
+  if (!window.speechSynthesis) return toast('Read-aloud isn’t supported on this device');
+  if (speechSynthesis.speaking) return speechSynthesis.cancel();
+  const s = SCREENS[CI.i];
+  const parts = [screenTitle(s), ...(s.items ? s.items.map(i => `${i.q} Choose from ${labelsFor(i.k).join(', ')}.`) : s.id === 'meds' ? MED_OPTS.map(o => o[0]) : s.id === 'substances' ? SUBS.map(o => o[0]) : ['Yes or no.'])];
+  const u = new SpeechSynthesisUtterance(parts.join(' ')); u.rate = .95; speechSynthesis.speak(u);
+}
+
+Object.assign(ACT, {
+  'ci-adv': advance,
+  'ci-speak': speakScreen,
+  'ci-pick': el => { CI.a.meds = +el.dataset.k; $$('.choice', CI.layer).forEach((b, i) => b.classList.toggle('sel', i === CI.a.meds)); updateQGauge(); },   // single choice: tap and move on
+  'ci-yn': el => { CI.a.unreported = el.dataset.v; if (el.dataset.v === 'no') CI.a.dates = []; renderCI(); updateQGauge(); },
+  'ci-date': el => { const d = el.dataset.d, a = CI.a.dates || (CI.a.dates = []), i = a.indexOf(d); if (i >= 0) a.splice(i, 1); else a.push(d); el.classList.toggle('sel'); updateQGauge(); },
+  'ci-cal': el => { const m = CI.cal.m + +el.dataset.d; CI.cal = { y: CI.cal.y + Math.floor(m / 12), m: ((m % 12) + 12) % 12 }; renderCI(); updateQGauge(); },
+  'ci-sub': el => {
+    const v = el.dataset.v, a = CI.a.subs || (CI.a.subs = []), i = a.indexOf(v);
+    if (i >= 0) a.splice(i, 1); else if (v === NONE) a.splice(0, a.length, NONE); else { const n = a.indexOf(NONE); if (n >= 0) a.splice(n, 1); a.push(v); }
+    $$('.sub', CI.layer).forEach(b => b.classList.toggle('sel', a.includes(b.dataset.v))); const ow = $('#sub-other', CI.layer); if (ow) ow.hidden = !a.includes('Other'); updateQGauge();
+  }
+});
+document.addEventListener('pointerup', e => { if (CI && e.target.classList && e.target.classList.contains('s-range')) sliderInput(e.target); });
+document.addEventListener('input', e => { if (CI && e.target.id === 'sub-other-in') CI.a.other = e.target.value; if (CI && e.target.classList && e.target.classList.contains('s-range')) sliderInput(e.target); });

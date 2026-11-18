@@ -1,0 +1,21 @@
+/* Dark mode — the screen is inverted (lightness flipped, hue kept); colourful art is flipped back */
+html[data-theme="dark"] body{background:#0A0D12!important}
+html[data-theme="dark"] .phone{background:#0F1318!important}
+html[data-theme="dark"] .phone>*:not(.dark-keep){filter:invert(.92) hue-rotate(180deg)}
+html[data-theme="dark"] .phone>*{color-scheme:dark}
+/* restore true colours on art, avatars and gradient cards */
+html[data-theme="dark"] img,
+html[data-theme="dark"] .onb-img,
+html[data-theme="dark"] .bal-card,
+html[data-theme="dark"] .wk-tile,
+html[data-theme="dark"] .help-fab,
+html[data-theme="dark"] .nav .help,
+html[data-theme="dark"] .pf-hero,
+html[data-theme="dark"] .rh-gauge,html[data-theme="dark"] .oh-logo,
+html[data-theme="dark"] .fin-gauge,
+html[data-theme="dark"] .cm-gauge{filter:invert(1) hue-rotate(180deg)}
+/* keep the device frame visible against the dark page */
+html[data-theme="dark"] body{background:#161A21!important}
+@media (min-width:481px){
+  html[data-theme="dark"] .phone{border-color:#3A3D44!important;box-shadow:0 0 0 1.5px #6E737C,0 0 0 5px #1F232A,0 30px 80px rgba(0,0,0,.6)!important}
+}

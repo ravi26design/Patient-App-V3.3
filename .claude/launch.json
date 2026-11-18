@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "patient-dashboard",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["/Users/ravi/Documents/Claude-code/Patient Dashboard Version 3.1/.claude/serve.py"],
+      "port": 4173
+    }
+  ]
+}

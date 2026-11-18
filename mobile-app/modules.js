@@ -1,0 +1,759 @@
+/* Help, Progress and Community modules — ported from Patient Dashboard Version 2.0 */
+Object.assign(P, {
+  mic: '<path d="M12 3a3 3 0 0 0-3 3v5a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+  users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.6 3.2-5.5 6.5-5.5s5.7 1.9 6.5 5.5"/><path d="M16 4.7a3.5 3.5 0 0 1 0 6.6M18 14.8c2 .7 3.2 2.5 3.5 5.2"/>',
+  compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
+  globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+  flag: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  headset: '<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/>',
+  stetho: '<path d="M6 3v6a4 4 0 0 0 8 0V3"/><path d="M10 13v2a4 4 0 0 0 8 0v-1"/><circle cx="18" cy="12" r="2"/>',
+  sofa: '<path d="M5 11V8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v3"/><path d="M3 12a2 2 0 0 1 4 0v3h10v-3a2 2 0 0 1 4 0v5H3z"/>',
+  hands: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+  chev: '<path d="M9 6l6 6-6 6"/>',
+  left: '<path d="M15 6l-6 6 6 6"/>',
+  pencil: '<path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17z"/><path d="M14 7l3 3"/>',
+  cap: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11.5V16c0 1.5 3 3 6 3s6-1.500 6-3v-4.500"/>',
+  gear: '<circle cx="12" cy="12" r="3"/><path d="M12 2.500v3M12 18.500v3M2.500 12h3M18.500 12h3M5.300 5.300l2.100 2.100M16.600 16.600l2.100 2.100M5.300 18.700l2.100-2.100M16.600 7.400l2.100-2.100"/>',
+  out: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'
+});
+
+const mdHead = t => `<div class="layer-top fin-head md-head"><button class="plain-btn" data-act="close-layer" aria-label="Back">${ic('back', 22)}</button><span class="fh-t">${t}</span><span class="md-sp"></span></div>`;
+const mdLayer = (title, body, cls = '') => pushLayer(`${mdHead(title)}<div class="layer-body md-body">${body}</div>`, 'md-layer ' + cls);
+
+/* ═════════ HELP ═════════ */
+const CONTACTS = {
+  crisis: [
+    ['#C97B6F', '988', '988 Suicide & Crisis Lifeline', 'Free & confidential · 24/7 · call or text', '', [['call', 'tel:988'], ['text', 'sms:988']]],
+    ['#4A6D9A', 'chat', 'Crisis Text Line', 'Text HOME to 741741 · 24/7', '', [['text', 'sms:741741&body=HOME']]]
+  ],
+  team: [
+    ['#6E9E80', 'headset', 'Daniel Ruiz', 'Your recovery coach', '(310) 555-0142', [['call', 'tel:3105550142'], ['text', 'sms:3105550142']]],
+    ['#4A90D9', 'hands', 'Tasha Brooks', 'Your peer specialist', '(310) 555-0188', [['call', 'tel:3105550188'], ['text', 'sms:3105550188']]],
+    ['#C97B6F', 'compass', 'Mike R.', 'Sponsor', '(323) 555-0117', [['call', 'tel:3235550117'], ['text', 'sms:3235550117']]]
+  ],
+  support: [
+    ['#C0504A', 'heart', 'Mom (Linda)', 'Family', '(562) 555-0193', [['call', 'tel:5625550193'], ['text', 'sms:5625550193']]],
+    ['#E0A93C', 'smile', 'Jack P.', 'Supportive friend', '(213) 555-0175', [['call', 'tel:2135550175'], ['text', 'sms:2135550175']]],
+    ['#C97B8A', 'heart', 'Sam', 'Loved one', '(310) 555-0151', [['call', 'tel:3105550151'], ['text', 'sms:3105550151']]],
+    ['#C97B6F', 'compass', 'Mike R.', 'Sponsor', '(323) 555-0117', [['call', 'tel:3235550117'], ['text', 'sms:3235550117']]],
+    ['#6E9E80', 'headset', 'Daniel Ruiz', 'Your recovery coach', '(310) 555-0142', [['call', 'tel:3105550142'], ['text', 'sms:3105550142']]],
+    ['#4A90D9', 'hands', 'Tasha Brooks', 'Your peer specialist', '(310) 555-0188', [['call', 'tel:3105550188'], ['text', 'sms:3105550188']]],
+    ['#8A6FB0', 'sofa', 'Dr. Elena Rivera', 'Therapist · LCSW', '', [['email', 'mailto:e.rivera@clinic.example']]],
+    ['#4FA3A3', 'stetho', 'Dr. Sarah Okafor', 'Your doctor · MD', '', [['email', 'mailto:s.okafor@clinic.example']]]
+  ]
+};
+const ctRow = ([bg, icon, name, role, num, btns]) => `<div class="ct-row"><span class="ct-av" style="background:${bg}">${/^\d+$/.test(icon) ? icon : ic(icon, 20, 1.8)}</span>
+  <div class="ct-main"><b>${name}</b><small>${role}</small>${num ? `<em>${num}</em>` : ''}</div>
+  <div class="ct-btns">${btns.map(([k, h]) => `<a class="ct-btn ${k}" href="${h}">${ic(k === 'call' ? 'phone' : k === 'email' ? 'mail' : 'sms', 15, 2)}${k[0].toUpperCase() + k.slice(1)}</a>`).join('')}</div></div>`;
+const call911 = () => `<a class="md-911" href="tel:911"><span class="md-911-ic">${ic('phone', 22, 1.8)}</span><div><b>Call 911</b><small>Overdose or medical emergency — call now</small></div><span class="md-go">${ic('chev', 16, 2.2)}</span></a>`;
+const mdOpt = (act, tone, icon, t, d) => `<button class="md-opt t-${tone}" data-act="${act}"><span class="md-opt-ic">${ic(icon, 22, 1.8)}</span><div><b>${t}</b><small>${d}</small></div><span class="md-go">${ic('chev', 16, 2.2)}</span></button>`;
+
+function helpSheet() {
+  mdLayer('Help', `${call911()}
+    <div class="eyebrow md-eb">What's going on?</div>
+    ${mdOpt('md-crisis', 'r', 'pulse', 'I’m in crisis', '988 Lifeline, crisis text line &amp; naloxone help')}
+    ${mdOpt('md-urge', 'a', 'wave', 'I’m having cravings', 'Ride it out — breathing, grounding &amp; your people')}
+    ${mdOpt('md-team', 'g', 'hands', 'Reach my support team', 'Family, friends, sponsor, coach, peer, therapist &amp; doctor')}
+    <div class="eyebrow md-eb">New to the app?</div>
+    ${mdOpt('md-guide', 'b', 'sparkle', 'App Help Guide', 'A quick tour of the app’s main features')}
+    <div class="md-reassure">${ic('heart', 16, 1.8)}<span>Help is always one tap away, any time of day.</span></div>`);
+}
+function crisisScreen() {
+  mdLayer('Crisis support', `${call911()}
+    <div class="md-note"><b>Possible overdose?</b> Signs: can't wake them, slow or stopped breathing, blue lips or fingertips. <b>Call 911, give naloxone, stay with them.</b></div>
+    <button class="ct-row ct-tap" data-act="md-nalox"><span class="ct-av" style="background:#7BA47E">${ic('pill', 20, 1.8)}</span><div class="ct-main"><b>Find naloxone near me</b><small>Pharmacies &amp; free distribution points</small></div>${ic('chev', 18, 2)}</button>
+    <div class="eyebrow md-eb">More ways to get help right now</div>${CONTACTS.crisis.map(ctRow).join('')}
+    <div class="eyebrow md-eb">Reach a person on your team</div>${CONTACTS.team.map(ctRow).join('')}
+    <div class="md-foot"><span>${ic('leaf', 22, 1.7)}</span><b>This moment is not the whole story.</b><small>You've made it through hard moments before. You can make it through this one too.</small></div>`);
+}
+const soonScreen = (title, icon, t, d) => mdLayer(title, `<div class="empty-card"><span class="empty-ic">${ic(icon, 30, 1.5)}</span><h3>${t}</h3><p>${d}</p></div>`);
+
+/* ═════════ PROGRESS ═════════ */
+function _gen(n, from, to, lo, hi, seed) {
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const t = n > 1 ? i / (n - 1) : 0, base = from + (to - from) * t, w = Math.sin((i + seed) * 1.7) * (hi - lo) * .11 + Math.sin((i + seed) * .6) * (hi - lo) * .07;
+    out.push(Math.max(lo, Math.min(hi, Math.round((base + w) * 10) / 10)));
+  }
+  return out;
+}
+const PG_DATA = {
+  health: { label: 'Recovery Health', hex: '#455B8A', lo: 0, hi: 100, daily: _gen(84, 60, 78, 42, 92, 7), monthly: _gen(12, 56, 80, 42, 92, 17) },
+  urge: { label: 'Urge', hex: '#D4736A', lo: 1, hi: 5, daily: _gen(84, 4.1, 2.4, 1, 5, 1), monthly: _gen(12, 4.3, 2.2, 1, 5, 11) },
+  pain: { label: 'Pain', hex: '#C9A84C', lo: 1, hi: 5, daily: _gen(84, 3.8, 2.3, 1, 5, 2), monthly: _gen(12, 4.0, 2.1, 1, 5, 12) },
+  stress: { label: 'Stressful Events', hex: '#8B7EC8', lo: 1, hi: 5, daily: _gen(84, 4.2, 2.2, 1, 5, 3), monthly: _gen(12, 4.4, 2.0, 1, 5, 13) },
+  pleasant: { label: 'Pleasant Events', hex: '#4A7E5C', lo: 1, hi: 5, daily: _gen(84, 1.8, 3.7, 1, 5, 4), monthly: _gen(12, 1.6, 3.9, 1, 5, 14) },
+  risky: { label: 'Risky Situations', hex: '#D4612A', lo: 1, hi: 5, daily: _gen(84, 4.5, 2.1, 1, 5, 5), monthly: _gen(12, 4.6, 1.9, 1, 5, 15) },
+  sleep: { label: 'Sleep Quality', hex: '#4A90D9', lo: 1, hi: 5, daily: _gen(84, 2.0, 3.8, 1, 5, 6), monthly: _gen(12, 1.9, 4.0, 1, 5, 16) }
+};
+const PG_EMO = { health: '💙', urge: '⚡', pain: '🩹', stress: '😟', pleasant: '😊', risky: '⚠️', sleep: '🌙' };
+const PG = { items: ['health'], tf: 'W', off: 0 };
+const _DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], _MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+function tfSeries(d, m, tf, off) {
+  if (tf === 'W') { const end = d.length - 7 * off, start = Math.max(0, end - 7); return { data: d.slice(start, end), labels: _DOW.slice(0, end - start) }; }
+  if (tf === 'M') { const x = d.slice(-28); return { data: x, labels: x.map((_, i) => i % 7 === 3 ? 'Wk ' + (Math.floor(i / 7) + 1) : '') }; }
+  if (tf === '6M') return { data: m.slice(0, 6), labels: _MON.slice(0, 6) };
+  return { data: m.slice(0, 12), labels: _MON.slice(0, 12) };
+}
+const PG_MAXOFF = 11;
+function pgSmooth(xy) { return xy.map((q, i) => { if (!i) return `M${q[0].toFixed(1)} ${q[1].toFixed(1)}`; const p = xy[i - 1], mx = ((p[0] + q[0]) / 2).toFixed(1); return `C${mx} ${p[1].toFixed(1)} ${mx} ${q[1].toFixed(1)} ${q[0].toFixed(1)} ${q[1].toFixed(1)}`; }).join(' '); }
+function pgChart() {
+  const keys = PG.items, W = 330, H = 190, L = 34, T = 12, B = 26;
+  const mixed = keys.length > 1 && keys.includes('health'), rightPad = mixed ? 34 : 10;
+  const iw = W - L - rightPad, ih = H - T - B;
+  const axis = (k, x, anchor) => { const d = PG_DATA[k], ticks = d.hi === 100 ? [0, 20, 40, 60, 80, 100] : [1, 2, 3, 4, 5]; return ticks.map(v => `<text x="${x}" y="${(T + ih - (v - d.lo) / (d.hi - d.lo) * ih + 3).toFixed(1)}" font-size="9" text-anchor="${anchor}" fill="${d.hex}">${v}</text>`).join(''); };
+  let grid = `<line x1="${L}" x2="${L}" y1="${T}" y2="${T + ih}" stroke="rgba(31,42,55,.10)"/>`, lines = '', xl = '';
+  (PG_DATA[keys[0]].hi === 100 ? [0, .2, .4, .6, .8, 1] : [0, .25, .5, .75, 1]).forEach(f => { grid += `<line x1="${L}" x2="${W - rightPad}" y1="${(T + ih * f).toFixed(1)}" y2="${(T + ih * f).toFixed(1)}" stroke="rgba(31,42,55,.06)"/>`; });
+  keys.forEach((k, ki) => {
+    const d = PG_DATA[k], s = tfSeries(d.daily, d.monthly, PG.tf, PG.off), n = s.data.length;
+    const xy = s.data.map((v, i) => [L + (n > 1 ? i * iw / (n - 1) : iw / 2), T + ih - (v - d.lo) / (d.hi - d.lo) * ih]);
+    if (ki === 0) xl = s.labels.map((t, i) => t ? `<text x="${xy[i][0].toFixed(1)}" y="${H - 8}" font-size="9" text-anchor="middle" fill="#8F9AA5">${t}</text>` : '').join('');
+    const id = 'pgf' + ki;
+    if (keys.length === 1) lines += `<defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${d.hex}" stop-opacity=".26"/><stop offset="1" stop-color="${d.hex}" stop-opacity=".02"/></linearGradient></defs><path d="${pgSmooth(xy)} L${xy[n - 1][0].toFixed(1)} ${T + ih} L${xy[0][0].toFixed(1)} ${T + ih}z" fill="url(#${id})"/>`;
+    lines += `<path d="${pgSmooth(xy)}" fill="none" stroke="${d.hex}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    if (n <= 14) lines += xy.map(q => `<circle cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="3.4" fill="#fff" stroke="${d.hex}" stroke-width="2"/>`).join('');
+  });
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Trend chart">${grid}${axis(keys[0], L - 6, 'end')}${mixed ? axis(keys.find(k => k !== 'health'), W - rightPad + 6, 'start') : ''}${lines}${xl}</svg>`;
+}
+function pgStats() {
+  const f = (d, v) => d.hi === 100 ? Math.round(v) : v.toFixed(1);
+  return PG.items.map(k => {
+    const d = PG_DATA[k], a = tfSeries(d.daily, d.monthly, PG.tf, PG.off).data, last = a[a.length - 1], first = a[0], avg = a.reduce((x, y) => x + y, 0) / a.length, dl = last - first, up = dl >= 0;
+    const good = (d.hi === 100 || ['pleasant', 'sleep'].includes(k)) ? up : !up;
+    return `<div class="pg-stat" style="--c:${d.hex}"><span class="pg-sl"><i></i>${d.label}</span><b>${f(d, last)}</b><span class="pg-sd ${good ? 'good' : 'warn'}">${up ? '▲' : '▼'} ${f(d, Math.abs(dl))}</span><small>avg ${f(d, avg)} · ${f(d, Math.min(...a))}–${f(d, Math.max(...a))}</small></div>`;
+  }).join('');
+}
+function pgSpark(k) {
+  const d = PG_DATA[k], a = d.daily.slice(-14), mn = Math.min(...a), mx = Math.max(...a), w = 64, h = 22;
+  const xy = a.map((v, i) => [i * w / (a.length - 1), h - 3 - (v - mn) / ((mx - mn) || 1) * (h - 6)]);
+  return `<svg class="pg-sp" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><path d="${pgSmooth(xy)}" fill="none" stroke="${d.hex}" stroke-width="2" stroke-linecap="round"/></svg>`;
+}
+function pgTitle() { const k = PG.items; return k.map(x => `<span style="color:${PG_DATA[x].hex}">${PG_DATA[x].label}</span>`).join('<span class="pg-vs"> vs </span>'); }
+function pgPaint() {
+  const v = $('#v-progress'); if (!v) return;
+  $('#pg-title', v).innerHTML = pgTitle(); $('#pg-chart', v).innerHTML = pgChart();
+  $$('.pg-tf button', v).forEach(b => b.classList.toggle('on', b.dataset.tf === PG.tf));
+  const nav = $('#pg-nav', v); nav.hidden = PG.tf !== 'W';
+  $('#pg-wk', v).textContent = PG.off === 0 ? 'This week' : PG.off === 1 ? 'Last week' : PG.off + ' weeks ago';
+  $('#pg-prev', v).disabled = PG.off >= PG_MAXOFF; $('#pg-next', v).disabled = PG.off <= 0;
+  $$('.pg-item', v).forEach(b => b.classList.toggle('on', PG.items.includes(b.dataset.k)));
+  $('#pg-legend', v).innerHTML = PG.items.map(k => `<span><svg width="30" height="10" viewBox="0 0 30 10"><path d="M0 5h30" stroke="${PG_DATA[k].hex}" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="7 14" stroke-dashoffset="-1"/><circle cx="15" cy="5" r="4.2" fill="${PG_DATA[k].hex}"/></svg>${PG_DATA[k].label}</span>`).join('');
+}
+function renderProgress() {
+  $('#v-progress').innerHTML = `<div class="wal-top"><h1>Progress</h1><p class="md-sub">See how your recovery health and daily factors trend over time.</p></div>
+  <div class="pad"><div class="pg-card2"><div class="pg-h2"><b id="pg-title" class="pg-t"></b><button class="pg-info" data-act="pg-info" aria-label="About this chart">${ic('info', 22, 1.8)}</button></div><div class="pg-tf">${['W', 'M', '6M', 'Y'].map(t => `<button data-act="pg-tf" data-tf="${t}">${t}</button>`).join('')}</div>
+    <div class="pg-nav" id="pg-nav"><button id="pg-prev" data-act="pg-wk" data-d="1" aria-label="Previous week">${ic('left', 18, 2)}</button><span id="pg-wk">This week</span><button id="pg-next" data-act="pg-wk" data-d="-1" aria-label="Next week">${ic('chev', 18, 2)}</button></div>
+    <div id="pg-chart"></div><div class="pg-legend" id="pg-legend"></div></div>
+  <div class="pg-card2"><b class="pg-t2">Compare factors</b><p class="pg-hint">Pick up to 2 to see them side by side.</p>
+    <div class="pg-grid">${Object.keys(PG_DATA).map(k => `<button class="pg-item" style="--cat:${PG_DATA[k].hex}" data-act="pg-item" data-k="${k}"><span class="pg-n">${PG_DATA[k].label}</span></button>`).join('')}</div></div></div>`;
+  pgPaint();
+}
+
+/* ═════════ COMMUNITY ═════════ */
+const ROOMS = { community: ['💬', 'Community Room', '#4E7FA8'] };
+const TINT = { blue: '#DEEAF4', sage: '#E1ECE2', gold: '#FAEFD6', coral: '#F8E5E2' };
+const REACT = [['heart', 'heart', 'Been there', 'hearts', '#C56A5E'], ['support', 'sparkle', 'Proud of you', 'supports', '#C9973B'], ['strong', 'dumbbell', 'Stay strong', 'strong', '#4B77A6'], ['pray', 'shield', 'Holding you', 'pray', '#4E7A5E']];
+const mk = (id, user, tint, channel, time, text, hearts, supports, replies = [], extra = {}) => ({ id, user, tint, channel, time, text, hearts, supports, strong: 0, pray: 0, replies, ...extra });
+const POSTS = [
+  mk(9, 'northstar', 'gold', 'community', '12m ago', 'If today’s your first day back after a hard stretch — that’s not a demotion. Recovery isn’t linear for anyone in here. Proud of you for showing up.', 41, 19),
+  mk(8, 'tidewalker', 'blue', 'community', '38m ago', 'Anyone else awake at 2am white-knuckling it? Just needed to say it somewhere.', 27, 8, [{ user: 'riverbend', text: 'Here. Not going anywhere. What’s the loudest thought right now?' }]),
+  mk(104, 'stepbystep', 'blue', 'community', '40m ago', '90 days today. Working Step 4 with my sponsor this week — the searching-and-fearless part is no joke. Anyone got a gentle way to think about the resentment list?', 52, 31, [{ user: 'Marcus T.', text: 'Peer specialist here — a lot of people write the resentment first and the “my part” column last, on a different day. You don’t have to do it all in one sitting.' }]),
+  mk(7, 'Denise R.', 'blue', 'community', '1h ago', 'Question from a few of you this week: yes, it’s normal for cravings to spike around custody visits. It’s a trigger, not a setback. Plan the hour before and the hour after, not just the visit itself.', 63, 22),
+  mk(103, 'toolbox', 'gold', 'community', '1h ago', 'Used the SMART cost-benefit worksheet on my 5pm craving instead of just white-knuckling. Writing down what using would actually cost me tomorrow killed most of the urge.', 38, 16),
+  mk(6, 'emberly', 'coral', 'community', '2h ago', 'Does buprenorphine make anyone else feel foggy in the mornings, or is that just me still adjusting?', 9, 4, [{ user: 'James O.', text: 'Common in the first few weeks — worth mentioning your dose timing to your prescriber. Mine moved mine to bedtime and it helped a lot.' }]),
+  mk(102, 'stillwater', 'sage', 'community', '2h ago', 'Reminder for anyone sitting with a craving right now: you can watch it rise and pass without acting on it. It’s a wave, not a command. Ten slow breaths — I’ll sit with you.', 74, 29),
+  mk(5, 'quietpine', 'sage', 'community', '3h ago', 'Took my kid to school again this morning. Eight years ago I couldn’t have named her teacher. Small, but it’s mine.', 118, 54),
+  mk(101, 'dawnlight', 'blue', 'community', '3h ago', 'Faith is the thing that gets me to my morning meeting some days. Not preaching to anyone — just grateful there’s a room here where I can say that without it being weird. What keeps you grounded?', 61, 24),
+  mk(4, 'riverbend', 'sage', 'community', '5h ago', 'Nearest meeting is two counties over and today’s harder than usual. Anyone from a rural area have tips for the in-between days?', 14, 11),
+  mk(256, 'tendergrief', 'blue', 'community', '1d ago', 'Grief and recovery both ask me to feel things. Taking it one breath at a time.', 68, 47),
+  mk(257, 'slowtrust', 'sage', 'community', '1d ago', 'Rebuilding trust with my partner is slow. We agreed on weekly reflections and it’s helping.', 93, 7),
+  mk(260, 'sunnyside', 'blue', 'community', '3d ago', 'Tried a pottery class last night. Terrible bowl, great time, zero cravings.', 81, 46)
+];
+const CM = { room: 'community', open: false, pick: 'community', draft: '', replying: new Set(), flagged: new Set(), support: 0 };
+const cmRank = () => { const s = CM.support + 4 * 5; return s >= 400 ? 'Anchor' : s >= 180 ? 'Encourager' : s >= 60 ? 'Regular' : 'Neighbor'; };
+const roomTag = c => { const r = ROOMS[c] || ['💬', 'Community', '#8A7D75']; return `<span class="croom" style="--rc:${r[2]}"><i>${r[0]}</i>${r[1]}</span>`; };
+const AV_SKIN = ['#F2C9A5', '#E3A982', '#C98B63', '#A8714E', '#F7D6BC'], AV_HAIR = ['#2E2A29', '#5A3A29', '#8A5A3B', '#C9973B', '#3B4A5E', '#6B5DB0'];
+const avHash = t => { let h = 7; for (const c of String(t)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; };
+function avatar(user, tint, size = 40) {
+  const h = avHash(user), skin = AV_SKIN[h % 5], hair = AV_HAIR[(h >> 3) % 6], style = (h >> 6) % 4, bg = TINT[tint] || '#DEEAF4', top = AV_HAIR[(h >> 9) % 6];
+  const hairBack = style === 1 ? `<path d="M10 24c-2-10 4-17 10-17s12 7 10 17c-1 5-3 8-3 8H13s-2-3-3-8z" fill="${hair}"/>` : '';
+  const hairTop = [`<path d="M11 19c0-7 4-10 9-10s9 3 9 10c-3-3-6-4-9-4s-6 1-9 4z" fill="${hair}"/>`,
+    `<path d="M11 20c0-8 4-11 9-11s9 3 9 11c-2-4-5-6-9-6s-7 2-9 6z" fill="${hair}"/>`,
+    `<circle cx="20" cy="11" r="3.4" fill="${hair}"/><path d="M11 19c0-6 4-9 9-9s9 3 9 9c-3-3-6-4-9-4s-6 1-9 4z" fill="${hair}"/>`,
+    `<path d="M11.5 18c1-6 4-8.5 8.5-8.5S27.500 12 28.500 18c-4-1-7-3-8.500-5-1.500 3-4 4.500-8.500 5z" fill="${hair}"/>`][style];
+  return `<svg class="av-img" width="${size}" height="${size}" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" fill="${bg}"/>${hairBack}<path d="M5 40c1-8 7-11 15-11s14 3 15 11z" fill="${top}" opacity=".9"/><rect x="17" y="24" width="6" height="6" rx="2" fill="${skin}"/><ellipse cx="20" cy="19" rx="7.500" ry="8.500" fill="${skin}"/>${hairTop}<circle cx="17.200" cy="19.500" r=".9" fill="#2E2A29"/><circle cx="22.800" cy="19.500" r=".9" fill="#2E2A29"/><path d="M17.500 23c1.500 1.500 3.500 1.500 5 0" stroke="#2E2A29" stroke-width="1" fill="none" stroke-linecap="round"/></svg>`;
+}
+function cmPostHTML(p) {
+  const total = REACT.reduce((a, r) => a + (p[r[3]] || 0), 0);
+  return `<article class="cpost" data-pid="${p.id}"><div class="cp-top"><span class="cp-av photo">${avatar(p.user, p.tint)}</span>
+    <div class="cp-who"><b>${esc(p.user)}</b><small>${p.time}</small></div>
+    <button class="cp-flag${CM.flagged.has(p.id) ? ' on' : ''}" data-act="cm-flag" data-id="${p.id}" aria-label="Flag this post for review">${ic('flag', 16, 1.8)}</button></div>
+    <p class="cp-text">${esc(p.text)}</p>
+    <div class="cp-react">${REACT.map(r => `<button class="${p['r_' + r[0]] ? 'on' : ''}" data-act="cm-react" data-id="${p.id}" data-r="${r[0]}" aria-label="${r[2]}" title="${r[2]}" style="--rc:${r[4]}">${ic(r[1], 18, 1.8)}<span>${p[r[3]] || 0}</span></button>`).join('')}
+      <button class="rt" data-act="cm-comments" data-id="${p.id}" aria-label="Comments">${ic('chat', 18, 1.8)}<span>${p.replies.length || ''}</span></button></div>
+  </article>`;
+}
+function csList(p) {
+  return p.replies.length ? p.replies.map(r => `<div class="cs-item"><span class="cp-av photo sm">${avatar(r.user, 'blue', 36)}</span><div class="cs-bub"><b>${esc(r.user)}</b><p>${esc(r.text)}</p></div></div>`).join('') : '<div class="cm-empty"><b>No comments yet.</b>Be the first to leave some kind words.</div>';
+}
+function commentsSheet(id) {
+  const p = POSTS.find(x => x.id == id); if (!p) return;
+  const l = pushLayer(`<div class="sheet cs-sheet" data-pid="${p.id}"><span class="grab"></span>
+    <h2>Comments <em id="cs-n">${p.replies.length}</em></h2>
+    <div class="cs-list" id="cs-list">${csList(p)}</div>
+    <div class="cp-quick">${['Proud of you 🙌', 'Been there. You’ve got this.', 'Same here 🫂', 'Here with you.'].map(t => `<button data-act="cm-quick" data-id="${p.id}" data-t="${t}">${t.replace(/ [🙌🫂]$/u, '').replace('Been there. You’ve got this.', 'Been there')}</button>`).join('')}</div>
+    <div class="cs-box"><span class="cp-av photo sm">${avatar('you', 'blue', 36)}</span><input placeholder="Write a comment…" id="rp-${p.id}"><button data-act="cm-send" data-id="${p.id}" aria-label="Send">${ic('chev', 18, 2.4)}</button></div></div>`, 'sheet-wrap');
+  l.addEventListener('click', e => { if (e.target === l) popLayer(l); });
+}
+function csRefresh(p) {
+  const list = $('#cs-list'); if (list) { list.innerHTML = csList(p); list.scrollTop = list.scrollHeight; } const n = $('#cs-n'); if (n) n.textContent = p.replies.length;
+  const i = $('#rp-' + p.id); if (i) i.value = ''; cmFeed();
+}
+function cmFeed() {
+  const box = $('#cm-feed'); if (!box) return;
+  const list = POSTS;
+  box.innerHTML = (list.length ? list.map(cmPostHTML).join('') : '<div class="cm-empty"><b>Quiet in this room right now.</b>Be the first to say something — someone will see it.</div>');
+    const st = $('#cm-sup'); if (st) st.textContent = CM.support; const rk = $('#cm-rank'); if (rk) rk.textContent = cmRank();
+}
+function composeSheet() {
+  const l = pushLayer(`<div class="sheet cmp-sheet"><span class="grab"></span>
+    <div class="cmp-top"><span class="cb-av">${esc((S.name || 'You').charAt(0).toUpperCase())}</span><div class="cmp-who"><b>Share with the community</b><small>Posting as you</small></div><button class="cmp-x" data-act="close-layer" aria-label="Close">${ic('x', 18, 2)}</button></div>
+    <div class="cmp-box"><textarea id="cm-text" rows="5" placeholder="What’s on your mind? Even one line counts.">${esc(CM.draft)}</textarea><span class="cmp-count" id="cm-count">${CM.draft.length ? CM.draft.length + ' characters' : ''}</span></div>
+    <button class="btn cmp-send" id="cm-post" data-act="cm-submit"${CM.draft.trim() ? '' : ' disabled'}>Post anonymously</button></div>`, 'sheet-wrap');
+  l.addEventListener('click', e => { if (e.target === l) popLayer(l); });
+  setTimeout(() => { const t = $('#cm-text'); if (t) t.focus(); }, 320);
+}
+function renderCommunity() {
+  const me = esc((S.name || 'You').charAt(0).toUpperCase());
+  $('#v-community').innerHTML = `<div class="wal-top"><h1>Community</h1><p class="md-sub">Connect, share &amp; find support</p></div>
+  <div class="pad cm">
+    <div class="hub-card"><div class="hub-head"><span class="hub-ic" style="background:linear-gradient(145deg,#7FB0DC,#3F6E99)">${ic('shield', 22, 1.8)}</span><div><b>A safe place, always anonymous</b><small>Support whenever you need it</small></div></div>
+      <div class="hub-opts sp">
+        <button class="sp-card g" data-act="cm-soon" data-t="1:1 support"><span class="sp-ic">${ic('hands', 22, 1.8)}</span><b>Want 1:1 support?</b><small>A peer specialist or coach, privately</small><span class="sp-go">${ic('chev', 16, 2.2)}</span></button>
+        <button class="sp-card c" data-act="cm-soon" data-t="Find a meeting"><span class="sp-ic">${ic('compass', 22, 1.8)}</span><b>Find a Meeting</b><small>In-person, virtual &amp; hybrid</small><span class="sp-go">${ic('chev', 16, 2.2)}</span></button></div></div>
+    <div class="hub-card"><div class="hub-head"><span class="hub-ic" style="background:#5B92CE">${ic('chat', 22, 1.8)}</span><div><b>Find your people</b><small>Join the conversation</small></div></div>
+      <button class="cr-room" data-act="cm-room"><span class="cr-ic">${ic('users', 24, 1.8)}</span><span class="cr-tx"><b>Community Room</b><small>One shared space for everyone</small><span class="cr-live"><span class="cr-av"><i style="background:#7FB0DC">N</i><i style="background:#8FBF9F">T</i><i style="background:#E0B25C">R</i></span><em><u></u>214 here today</em></span></span><span class="cr-go">${ic('chev', 18, 2.2)}</span></button></div>
+    <button class="compose-bar" id="cm-bar" data-act="cm-open"><span class="cb-av">${me}</span><span class="cb-tx"><b>What’s on your mind?</b><small>Share, ask, or just say you’re here</small></span><span class="cb-go">${ic('mic', 18, 1.8)}</span></button>
+    <div id="cm-feed"></div></div>`;
+  cmFeed();
+}
+function roomsSheet() {
+  const cnt = k => POSTS.filter(p => k === 'all' || p.channel === k).length;
+  const l = pushLayer(`<div class="sheet rooms-sheet"><span class="grab"></span><h2>All Rooms</h2><p class="muted" style="font-size:16px;line-height:1.45">Browse every room and jump into the one that fits. Every room is watched over by a certified peer specialist.</p>
+    <div class="ar-list">${[['all', ['🌐', 'All Rooms', '#5B7FD6']], ...Object.entries(ROOMS)].map(([k, r]) => `<button class="ar-row${CM.room === k ? ' on' : ''}" data-act="cm-room" data-r="${k}"><i style="--rc:${r[2]}">${r[0]}</i><b>${r[1]}</b><em>${cnt(k)}</em></button>`).join('')}</div>
+    <button class="btn ghost" style="margin-top:12px" data-act="close-layer">Close</button></div>`, 'sheet-wrap');
+  l.addEventListener('click', e => { if (e.target === l) popLayer(l); });
+}
+
+
+/* ═════════ PROFILE (Me) — content ported from Patient Dashboard Version 2.0 ═════════ */
+const PF_PEOPLE = [
+  ['#6E9E80', 'DR', 'Daniel Ruiz', 'Your recovery coach', '(310) 555-0142'], ['#4A90D9', 'TB', 'Tasha Brooks', 'Your peer specialist', '(310) 555-0188'],
+  ['#C97B6F', 'MR', 'Mike R.', 'Sponsor · CPRS', '(323) 555-0117'], ['#8A6FB0', 'DE', 'Dr. Elena Rivera', 'Therapist · LCSW', '(310) 555-0164'],
+  ['#D8AD63', 'MS', 'Mom (Sarah M.)', 'Family', '(562) 555-0193'], ['#5E8560', 'JP', 'Jack P.', 'Supportive friend', '(213) 555-0175']
+];
+function renderMe() {
+  const full = [S.name, S.last].filter(Boolean).join(' ') || 'Friend', name = esc(full), ini = esc(full.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'R');
+  const since = fmtD(new Date(Date.now() - (Math.max(1, S.day || 1) - 1) * 864e5));
+  const meds = S.meds && S.meds.length ? S.meds : ['Suboxone 8mg / 2mg'];
+  const helps = [['run', 'g', 'Go for a walk'], ['phone', 'b', 'Call someone I trust'], ['music', 'a', 'Listen to music'], ['wind', 'r', 'Breathing exercise']];
+  const care = [['sage', 'Dr', 'Dr. Rivera', 'MOUD Prescriber'], ['purple', 'Th', 'Dr. Chen', 'Therapist · CBT'], ['rose', 'Sp', 'Mike R.', 'Sponsor · CPRS']];
+  const menu = [['b', 'book', 'Guides', 'pf-soon', 'Guides'], ['a', 'cap', 'Tutorials', 'pf-soon', 'Tutorials'], ['g', 'gear', 'Settings &amp; Preferences', 'pf-soon', 'Settings'], ['b', 'shield', 'Privacy &amp; Data Sharing', 'pf-soon', 'Privacy'], ['b', 'sparkle', 'App Help Guide', 'me-replay', '']];
+  const rem = [['morning', 'Morning', '☕'], ['afternoon', 'Midday', '🥗'], ['evening', 'Evening', '🌙']];
+  const lab = (title, extra = '') => `<div class="pf-lab"><span>${title}</span>${extra}</div>`;
+  $('#v-me').innerHTML = `<div class="pf-top"><button data-act="tab" data-v="home" aria-label="Back">${ic('back', 22)}</button><h2>My Profile</h2><span></span></div>
+    <div class="pf-hero"><span class="pf-hero-av">${avatar(full, 'blue', 104)}</span><h1>${name}</h1><p>Clean since ${since}</p>
+      <div class="pf-tags"><span class="gold">Level 4 · Bloom</span><span class="sage">2,340 XP</span></div></div>
+    ${lab('Medication')}<div class="pf-card">${meds.map(m => `<div class="pf-row"><span class="pf-ic blue">${ic('pill', 20, 1.8)}</span><div><b>${esc(m)}</b><small>Daily · Sublingual · Prescribed by Dr. Rivera</small></div></div>`).join('')}</div>
+    ${lab('What Helps Me', `<button class="pf-edit" data-act="pf-soon" data-t="Edit what helps me" aria-label="Edit what helps me">${ic('pencil', 16, 1.8)}</button>`)}<div class="pf-card">
+      <div class="pf-help">${helps.map(([i, c, t]) => `<div class="hp-${c}"><span>${ic(i, 24, 1.7)}</span><b>${t}</b></div>`).join('')}</div></div>
+    ${lab('My People', `<button class="pf-add" data-act="pf-add">${ic('plus', 14, 2.4)}Add</button>`)}<div class="pf-card"><p class="pf-sub">Call or text anyone in one tap.</p>
+      ${[...PF_PEOPLE, ...(S.people || []).map(x => [x.c, x.i, x.n, x.r, x.p])].map(([c, i, n, r, p]) => { const d = String(p || '').replace(/[^\d+]/g, ''); if (!d) return `<div class="pf-row"><span class="pf-av" style="background:color-mix(in srgb,${c} 20%,#fff);color:color-mix(in srgb,${c} 78%,#26323D)">${i}</span><div><b>${esc(n)}</b><small>${esc(r)}</small></div></div>`; return `<div class="pf-row"><span class="pf-av" style="background:color-mix(in srgb,${c} 20%,#fff);color:color-mix(in srgb,${c} 78%,#26323D)">${i}</span><div><b>${n}</b><small>${r}</small></div><span class="pf-btns"><a class="call" href="tel:${d}" aria-label="Call ${n}">${ic('phone', 16, 2)}</a><a class="txt" href="sms:${d}" aria-label="Text ${n}">${ic('sms', 16, 2)}</a></span></div>`; }).join('')}</div>
+    ${lab('Care Team')}<div class="pf-card">${care.map(([t, i, n, r]) => `<div class="pf-row"><span class="pf-ic ${t}">${i}</span><div><b>${n}</b><small>${r}</small></div></div>`).join('')}</div>
+    ${lab('Setup reminders')}<div class="pf-card">
+      <div class="st-row"><span class="pf-ic blue">${ic('clock', 22, 1.7)}</span><div><b>Daily Reflection reminders</b><small id="st-state">${S.remindOn === false ? 'Disabled' : 'Enabled'}</small></div><button class="st-sw${S.remindOn === false ? '' : ' on'}" id="st-sw" role="switch" aria-checked="${S.remindOn !== false}" aria-label="Daily Reflection reminders" data-act="pf-rem-toggle"><i></i></button></div>
+      <div class="st-row st-time${S.remindOn === false ? ' off' : ''}" id="st-time"><span class="pf-ic amber">${ic('sun', 22, 1.7)}</span><div><b>Daily Reflection time</b><small>${remindTime()} PT</small></div><select id="pf-time" aria-label="Daily Reflection time"${S.remindOn === false ? ' disabled' : ''}>${Array.from({ length: 17 }, (_, k) => k + 6).map(h => { const v = String(h).padStart(2, '0') + ':00', cur = (S.remindTime || '').slice(0, 5) || ({ morning: '08:00', afternoon: '13:00', evening: '20:00' })[S.remind]; return `<option value="${v}"${v === cur ? ' selected' : ''}>${h % 12 || 12}:00 ${h < 12 ? 'AM' : 'PM'}</option>`; }).join('')}</select></div></div>
+    ${lab('Appearance')}<div class="pf-card"><div class="st-lang">${[['light', 'Light', 'sun'], ['dark', 'Dark', 'moon']].map(([k, l, i]) => `<button class="${(S.theme || 'light') === k ? 'on' : ''}" data-act="pf-theme" data-k="${k}">${ic(i, 16, 2)}${l}</button>`).join('')}</div></div>
+    ${lab('Language settings')}<div class="pf-card"><div class="st-lang">${[['en', 'English'], ['es', 'Español']].map(([k, l]) => `<button class="${(S.profile.lang || 'en') === k ? 'on' : ''}" data-act="pf-lang" data-k="${k}">${(S.profile.lang || 'en') === k ? ic('check', 16, 2.6) : ''}${l}</button>`).join('')}</div></div>
+    <div class="pf-card pf-list">${menu.map(([t, i, l, a, d]) => `<button class="pf-mrow t-${t}" data-act="${a}" data-t="${d}"><span class="pf-mic">${ic(i, 20, 1.8)}</span><b>${l}</b>${ic('chev', 16, 2.2)}</button>`).join('')}
+      <button class="pf-mrow t-r" data-act="me-logout"><span class="pf-mic">${ic('out', 20, 1.8)}</span><b>Log out</b></button></div>`;
+}
+
+
+/* ═════════ ADD TO MY PEOPLE ═════════ */
+function openAddPerson() {
+  const feats = [['home', 'home', 'Home Overview'], ['progress', 'bars', 'Progress'], ['rewards', 'coin', 'Rewards']];
+  const l = pushLayer(`<div class="sheet ap-sheet"><span class="grab"></span>
+    <div class="ap-head"><span class="ap-ic">${ic('users', 24, 1.7)}</span><div><h2>Add to My People</h2><p>They’ll appear in your Call or Text list.</p></div><button class="cmp-x" data-act="close-layer" aria-label="Close">${ic('x', 18, 2)}</button></div>
+    <div class="ap-body">
+      <label class="ap-l" for="ap-name">Full name</label><input class="ap-in" id="ap-name" placeholder="e.g. Jordan Lee" autocomplete="off">
+      <span class="ap-l">Relationship</span><div class="ap-seg" id="ap-rel"><button class="on" data-r="Friend">${ic('user', 18, 1.8)}Friend</button><button data-r="Family">${ic('users', 18, 1.8)}Family</button></div>
+      <label class="ap-l" for="ap-phone">Contact number</label><input class="ap-in" id="ap-phone" inputmode="tel" placeholder="(555) 123-4567">
+      <label class="ap-l" for="ap-email">Email</label><input class="ap-in" id="ap-email" inputmode="email" placeholder="name@email.com" autocomplete="off">
+      <span class="ap-l">Give feature access</span><p class="ap-h">Choose what this person can see in your app.</p>
+      ${feats.map(([k, i, t]) => `<div class="ap-feat"><span>${ic(i, 20, 1.7)}</span><b>${t}</b><button class="st-sw" role="switch" aria-checked="false" aria-label="${t}" data-act="ap-sw" data-k="${k}"><i></i></button></div>`).join('')}
+    </div>
+    <div class="ap-foot"><button class="btn ghost" data-act="close-layer">Cancel</button><button class="btn" id="ap-go" data-act="ap-save" disabled>Add person</button></div></div>`, 'sheet-wrap');
+  l.addEventListener('click', e => { if (e.target === l) popLayer(l); });
+  const chk = () => { const n = $('#ap-name').value.trim(), p = $('#ap-phone').value.replace(/\D/g, ''), m = $('#ap-email').value.trim(); $('#ap-go').disabled = !(n && (p.length >= 7 || /^\S+@\S+\.\S+$/.test(m))); };
+  l.addEventListener('input', e => {
+    if (e.target.id === 'ap-phone') { const d = e.target.value.replace(/\D/g, '').slice(0, 10); e.target.value = d.length > 6 ? `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6)}` : d.length > 3 ? `(${d.slice(0, 3)}) ${d.slice(3)}` : d; }
+    chk();
+  });
+}
+
+
+/* ═════════ WALLET — bonuses ═════════ */
+function bonusCard() {
+  const week = S.history.filter(h => (Date.now() - new Date(h.date + 'T12:00:00').getTime()) < 7 * 864e5).length;
+  const items = [
+    ['r', 'flame', 'Streak bonus', 'Grows every day you reflect, up to ' + usd(5), clamp(S.streak, 0, 5) / 5, '+' + usd(clamp(S.streak + 1, 1, 5)) + ' today', S.streak >= 5],
+    ['a', 'bolt', '7-day streak', 'Reflect 7 days in a row', clamp(S.streak, 0, 7) / 7, '+' + usd(20), S.streak >= 7],
+    ['g', 'calendar', 'Weekly goal', '5 reflections in a week · ' + Math.min(week, 5) + ' of 5', Math.min(week, 5) / 5, '+' + usd(10), week >= 5],
+    ['b', 'rocket', '30-day milestone', 'A full month of showing up', clamp(S.streak, 0, 30) / 30, '+' + usd(50), S.streak >= 30]
+  ];
+  return `<div class="sec"><div class="eyebrow" style="margin-bottom:12px">Bonuses</div><div class="bn-card">${items.map(([c, i, t, d, p, amt, done]) => `<div class="bn-row t-${c}"><span class="bn-ic">${ic(i, 22, 1.8)}</span><div class="bn-mid"><b>${t}</b><small>${d}</small><div class="bn-bar"><i style="width:${Math.round(p * 100)}%"></i></div></div><span class="bn-amt${done ? ' done' : ''}">${done ? ic('check', 14, 2.6) + 'Earned' : amt}</span></div>`).join('')}</div></div>`;
+}
+
+
+/* ═════════ REFLECTION RESULT — speedometer modal, then back to Home ═════════ */
+function renderScore(root) {
+  const vals = strengthVals(CI.a), overall = Math.round(finalPts());
+  const pi = CI.saved ? S.history.length - 2 : S.history.length - 1, prev = pi >= 0 ? S.history[pi].overall : null;
+  CI.res = { vals, overall, prev };
+  if (!CI.saved) {
+    CI.saved = true;
+    const first = !checkedInToday();
+    if (first) {
+      S.streak = S.lastCheckin === daysAgo(1) ? S.streak + 1 : 1; S.lastCheckin = today();
+      S.history.push({ date: today(), overall, vals, raw: JSON.parse(JSON.stringify(CI.a)) });
+      S.loop = { date: today(), survey: 1, score: 1 };
+    }
+    save(); CI.first = first;
+    const e = earnCalc(false);
+    if (e.first) { earn(e.base, 'Daily Reflection', overall); if (e.st) earn(e.st, 'Streak bonus'); S.loop.earned = 1; save(); }
+  }
+  const layer = CI.layer; layer.classList.add('rd-layer');
+  const day = Math.max(1, S.day || 1), dIn = ((day - 1) % 7) + 1, first = !!CI.first;
+  const f = FOCUS[focusKey({ vals })], fin = S.focusDone === today();
+  const e = earnCalc(false), got = e.base + e.st, srt = Q.map(q => ({ ...q, v: vals[q.k] })).sort((a, b) => b.v - a.v), hi = srt[0], lo = srt[srt.length - 1];
+  const d = prev == null ? null : overall - prev;
+  const side = d == null ? ['First', 'reflection'] : d > 0 ? ['▲ ' + d, 'from last time'] : d < 0 ? ['▼ ' + -d, 'from last time'] : ['Same', 'as last time'];
+  const A = Math.PI * 70, off = A * (1 - clamp(overall / 100, 0, 1));
+  root.innerHTML = `<div class="rd-welcome rd-result"><div class="rd-pad">
+    <div class="rd-top rd-hdr"><span class="rd-wk">Week ${Math.ceil(day / 7)} · Day ${dIn}</span><button class="rd-help" data-act="help">${ic('plus', 14, 2.8)}Help</button></div>
+    <div class="rd-prog"><div class="seg"><i class="on"></i><i></i></div><div class="lbl"><span class="ok">Reflection <b>+${usd(10)}</b></span><span>Activity <b>+${usd(20)}</b></span></div></div>
+    <h1 class="rd-h1 rr-h1">${first && !prev ? 'Your first reflection is done.' : 'Your reflection is done.'}</h1>
+    <div class="rr-score"><div class="rr-arc"><svg viewBox="0 0 180 100" aria-hidden="true"><defs><linearGradient id="rrg" x1="0" x2="1"><stop offset="0" stop-color="#BBD0E6"/><stop offset="1" stop-color="#4F82B0"/></linearGradient></defs>
+        <path d="M20 90A70 70 0 0 1 160 90" fill="none" stroke="#E8EDF3" stroke-width="14" stroke-linecap="round"/>
+        <path class="rr-fill" d="M20 90A70 70 0 0 1 160 90" fill="none" stroke="url(#rrg)" stroke-width="14" stroke-linecap="round" stroke-dasharray="${A}" stroke-dashoffset="${A}" data-off="${off}"/></svg>
+        <div class="rr-num"><b id="g-num" data-score="${overall}">0</b></div><small class="rr-cap">RECOVERY SCORE</small></div>
+      <div class="rr-side"><b>${side[0]} ${side[1]}</b>
+        <div class="rr-trend">${rrTrend(S.history.map(h => h.overall).slice(-7), overall)}</div></div></div>
+    <p class="rr-ins"><b class="hi">${hi.label}</b> is your strongest area today. <b class="lo">${lo.label}</b> could use a little care.</p>
+    ${e.base ? `<div class="rr-earn"><span class="rr-eic">${ic('check', 18, 2.8)}</span><div><b>Reflection complete</b></div><strong>+${usd(e.base)}</strong></div>` : ''}
+    <div class="rd-card rr-next"><div class="rr-nh"><span class="rr-nic t-${f.tone}">${ic(f.icon, 32, 1.7)}</span><div><h2>${f.page}</h2><p class="rr-why">${f.why}.</p></div></div>
+      <div class="rr-meta"><span>${ic('check', 14, 2.4)}${f.steps.length} short steps</span></div>
+      <button class="btn" data-act="${fin ? 'ci-later' : 'fpr-go'}" data-k="${focusKey({ vals })}">${fin ? 'Back to Home' : 'Start activity'} ${ic('next', 18, 2.4)}</button></div></div></div>`;
+  setTimeout(() => {
+    const p = $('.rr-fill', root); if (p) { p.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(.2,.8,.2,1)'; p.style.strokeDashoffset = p.dataset.off; }
+    const n = $('#g-num', root); if (n) countUp(n, overall, 1200, 0);
+  }, 150);
+  if (CI.first && !CI.resumed) setTimeout(confetti, 600);
+  layer._cleanup = () => { CI = null; };
+}
+
+
+/* ═════════ HOME — Today's focus card + guided activity page ═════════ */
+const FOCUS = {
+  cravings: { name: 'Craving', icon: 'bolt', tone: 'r', line: 'Cravings look like the biggest challenge today.', cta: 'Start Managing Cravings', mins: 4, page: 'Managing Cravings', hero: 'life', why: 'Surf the urge until it passes',
+    steps: [['Name it and rate it', 'Say it plainly: “I’m having a craving.” Rate it 1–10. Naming it moves it from the driver’s seat to the passenger seat — you’re observing it now, not obeying it.'],
+      ['Delay - set a 15-minute deal', 'You don’t have to promise forever, just 15 minutes. Tell yourself “I can revisit this in 15 minutes” and set an actual timer. Almost every craving loses its grip inside that window.'],
+      ['Distance - change your surroundings', 'Leave the room, step outside, put physical space between you and the cue. Cravings feed on cues; starve this one.'],
+      ['Distract - give your hands and mind a job', 'Splash cold water on your face, do 10 slow squats, play the number game, make tea. Strong sensation + simple task = the craving loses your attention.'],
+      ['Dial - reach one person', 'Text or call someone from your support list, even just: “Rough moment, riding it out.” Saying it out loud cuts a craving’s intensity more than almost anything else.'],
+      ['Decide and review', 'When the timer ends, re-rate it 1–10. Notice it dropped - that’s proof, not luck. Jot one line about what triggered it; every craving you outlast makes the next one weaker.']],
+    works: 'Cravings rise and fall in waves and usually peak within 15–30 minutes. Delay, distance and distraction give the wave time to pass, while connection and review turn each one into evidence that you can outlast them.' },
+  meds: { name: 'Medication', icon: 'pill', tone: 'b', line: 'Staying on track with your medication is today’s focus.', cta: 'Start Medication Check', mins: 3, page: 'Staying on Track', hero: 'pill', why: 'Make your medication routine easy',
+    steps: [['Check your plan', 'Look at your dose and timing. If you’re unsure, write down the question for your prescriber.'], ['Pair it with a habit', 'Take it at the same moment as something you already do daily, like brushing your teeth or making coffee.'], ['Set a reminder', 'A phone alarm or pill box makes the routine automatic so you don’t have to rely on memory.'], ['Plan for a missed dose', 'Know what to do if you miss one, and who to call. A plan takes the panic out of the moment.'], ['Tell someone', 'Share your plan with one person on your team. Being known makes it easier to keep.']],
+    works: 'Consistent medication keeps cravings steadier. Small routines and reminders do more than willpower.' },
+  risk: { name: 'Staying Safe', icon: 'shield', tone: 'a', line: 'Risky moments look like the biggest challenge today.', cta: 'Start Staying Safe', mins: 4, page: 'Staying Safe', hero: 'shield', why: 'Get ahead of risky moments',
+    steps: [['Name your riskiest cue', 'Which person, place or time of day is hardest? Write it down in one line.'], ['Make an if-then plan', '“If I’m near ___, then I will ___.” A ready plan beats deciding in the moment.'], ['Change the route', 'Take a different way, shorten the visit, or bring someone with you.'], ['Keep help close', 'Save one person to call, and keep naloxone where you can reach it.'], ['Review tonight', 'Notice what worked. Adjust the plan for tomorrow.']],
+    works: 'Planning ahead for known triggers cuts the number of decisions you have to make under pressure.' },
+  stress: { name: 'Stress', icon: 'wind', tone: 'b', line: 'Stress looks like the biggest challenge today.', cta: 'Start Managing Stress', mins: 4, page: 'Managing Stress', hero: 'wind', why: 'Bring your body back to calm',
+    steps: [['Pause and notice', 'Stop for a moment. Name where you feel stress in your body.'], ['Breathe out longer', 'Breathe in for 4, out for 6. Repeat five times. A long exhale tells your body it’s safe.'], ['Drop your shoulders', 'Unclench your jaw and hands. Let your shoulders fall away from your ears.'], ['Shrink the task', 'Pick the one smallest thing you can do next. Ignore the rest for now.'], ['Reach out', 'Tell someone how you’re feeling, even in one line.']],
+    works: 'Slow breathing activates the body’s calming response, and shrinking tasks makes stress feel manageable.' },
+  emotions: { name: 'Emotions', icon: 'smile', tone: 'p', line: 'Big feelings look like the biggest challenge today.', cta: 'Start Steadying Emotions', mins: 4, page: 'Steadying Emotions', hero: 'smile', why: 'Let the feeling move through',
+    steps: [['Name the feeling', 'Say what it is: sad, angry, anxious. Naming a feeling lowers its volume.'], ['Locate it', 'Notice where it sits in your body, and breathe into that spot.'], ['Let it be', 'You don’t have to fix it. Feelings rise and fall like waves.'], ['Do one kind thing', 'A walk, a shower, music, a warm drink. Pick the gentlest option.'], ['Share it', 'Tell someone you trust, or write one line in your own words.']],
+    works: 'Feelings that are named and shared lose their intensity much faster than ones we push away.' },
+  body: { name: 'Sleep & Body', icon: 'moon', tone: 'p', line: 'Sleep and your body need care today.', cta: 'Start Body Care', mins: 4, page: 'Caring for Your Body', hero: 'moon', why: 'Give your body what it needs',
+    steps: [['Check in with your body', 'Scan from head to toe. Where do you feel tight, tired or sore?'], ['Move gently', 'Stretch or take a short walk. Gentle movement eases pain and tension.'], ['Drink and eat', 'Have water and something simple to eat. Your body needs fuel to recover.'], ['Plan your wind-down', 'Dim the lights, put away screens and keep the same bedtime tonight.'], ['Ask for help', 'If pain or poor sleep keeps up, tell your care team.']],
+    works: 'Sleep and pain affect cravings and mood the next day, so small body-care steps protect tomorrow’s recovery.' },
+  drive: { name: 'Motivation', icon: 'rocket', tone: 'g', line: 'Motivation and confidence need a boost today.', cta: 'Start Building Confidence', mins: 3, page: 'Building Confidence', hero: 'rocket', why: 'Remember why you started',
+    steps: [['Name your why', 'Write one reason recovery matters to you today.'], ['Count a win', 'List one thing you’ve done well this week, however small.'], ['Picture tomorrow', 'Imagine a good day ahead. What does it look like?'], ['Pick one small step', 'Choose one thing you can do in the next hour to move forward.'], ['Tell someone', 'Share your win or your plan with someone on your team.']],
+    works: 'Remembering your reasons and counting small wins builds confidence, which makes the next step easier.' }
+};
+const FP = { done: new Set() };
+function focusKey(h) { const q = Q.map(x => [x.k, h.vals[x.k]]).sort((a, b) => a[1] - b[1])[0]; return q[0]; }
+function focusCard() {
+  const last = S.history[S.history.length - 1], dn = checkedInToday() && last;
+  if (!dn) return `<div class="fc-card"><div class="fc-top"><span class="fc-ic t-r">${ic('bolt', 26, 1.7)}</span><div><small>Today’s focus</small><b class="muted">Not ready yet</b></div></div>
+    <p class="fc-note">Your focus and recovery activity for today show here after your daily reflection.</p>
+    <button class="fc-btn" data-act="checkin">Complete today’s reflection ${ic('next', 18, 2.4)}</button><span class="fc-cap">About 1 minute · unlocks today’s score</span></div>`;
+  const k = focusKey(last), f = FOCUS[k], fin = S.focusDone === today();
+  return `<div class="fc-card"><div class="fc-top"><span class="fc-ic t-${f.tone}">${ic(f.icon, 26, 1.7)}</span><div><small>Today’s focus</small><b>${f.name}</b></div></div>
+    <p class="fc-line">${f.line}</p>
+    <button class="fc-btn" data-act="focus-open" data-k="${k}">${fin ? 'Review ' + f.page : f.cta} ${ic('next', 18, 2.4)}</button><span class="fc-cap">${fin ? 'Completed today ✓' : 'About ' + f.mins + ' minutes'}</span></div>`;
+}
+function focusPrompt() {
+  const last = S.history[S.history.length - 1]; if (!last || S.focusDone === today() || $$('.layer').length) return;
+  const k = focusKey(last), f = FOCUS[k];
+  const l = pushLayer(`<div class="sheet cx-sheet fpr-sheet"><span class="grab"></span><span class="fpr-ic t-${f.tone}">${ic(f.icon, 28, 1.7)}</span>
+    <h2>One more step for today</h2><p>Complete today’s personalized activity, <b>${f.page}</b>, to earn <b>${usd(20)}</b>.</p>
+    <button class="btn" data-act="fpr-go" data-k="${k}">Start activity</button><button class="btn ghost" data-act="close-layer">Maybe later</button></div>`, 'sheet-wrap');
+  l.addEventListener('click', e => { if (e.target === l) popLayer(l); });
+}
+const FP_MIN = 3;   // seconds each step stays locked, so the activity can't be tapped through
+const FP_ICONS = { cravings: ['chat', 'clock', 'run', 'game', 'phone', 'target'], meds: ['book', 'shower', 'clock', 'shield', 'heart'], risk: ['pin', 'target', 'run', 'phone', 'moon'],
+  stress: ['pause', 'wind', 'smile', 'target', 'chat'], emotions: ['chat', 'pulse', 'leaf', 'heart', 'send'], body: ['pulse', 'run', 'drop', 'moon', 'phone'], drive: ['bulb', 'sparkle', 'sun', 'rocket', 'chat'] };
+/* step illustration: a calm landscape, each step in its own colour */
+const FP_PAL = [['#E3EDF8', '#F4F8FD', '#A9C3E3', '#7FA3CF', '#4A6E96', '#35597D'], ['#E4F1E8', '#F5FAF6', '#B5D6BF', '#8DB89A', '#4F8062', '#3A6A4C'], ['#FCEBDD', '#FEF6EE', '#F2C6A6', '#E3A57F', '#B8704A', '#9A5A38'],
+  ['#EAE6F7', '#F7F5FC', '#C5BDE6', '#A398D1', '#6C5FA8', '#54488C'], ['#DCF1F0', '#F2FAFA', '#A8D8D8', '#78BDBE', '#3C8A8C', '#2C7274'], ['#FBF1D9', '#FEF9EC', '#F1DB9E', '#E0BE6A', '#B08A2E', '#8E6D1E']];
+/* step motifs: a small flat drawing that matches what each step asks the person to do */
+const FP_MAP = { cravings: ['name', 'timer', 'door', 'tea', 'chat', 'trend'], meds: ['clipboard', 'tea', 'alarm', 'shield', 'chat'], risk: ['pin', 'branch', 'route', 'kit', 'moon'],
+  stress: ['pause', 'breath', 'relax', 'small', 'chat'], emotions: ['faces', 'bodyspot', 'waves', 'tea', 'chat'], body: ['bodyspot', 'walk', 'glass', 'moon', 'chat'], drive: ['heart', 'trophy', 'sunrise', 'stairs', 'chat'] };
+const FP_MOT = {
+  name: (a, b, c) => `<rect x="8" y="6" width="84" height="40" rx="15" fill="#fff" stroke="${a}" stroke-width="4"/><path d="M28 45l-4 11l16-11z" fill="#fff" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><path d="M26 45h14" stroke="#fff" stroke-width="6"/><text x="26" y="40" font-size="38" font-weight="700" fill="${b}" font-family="Georgia,serif">&#8220;</text><text x="62" y="33" text-anchor="middle" font-size="17" font-weight="700" fill="${a}" font-family="Inter,sans-serif">1-10</text><g opacity=".55"><circle cx="22" cy="76" r="14" fill="none" stroke="${c}" stroke-width="5"/><circle cx="22" cy="76" r="4" fill="${c}"/><path d="M22 62v10M9 83l9-4M35 83l-9-4" stroke="${c}" stroke-width="4" stroke-linecap="round"/></g><path d="M46 76h14m-5-6l6 6l-6 6" stroke="${a}" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="70" y="56" width="16" height="36" rx="7" fill="${b}" stroke="${a}" stroke-width="3.5"/><rect x="68" y="80" width="26" height="12" rx="5" fill="${b}" stroke="${a}" stroke-width="3.5"/>`,
+  scale: (a, b, c) => `<rect x="8" y="44" width="84" height="12" rx="6" fill="${c}"/><rect x="8" y="44" width="56" height="12" rx="6" fill="${b}"/><g fill="${a}" opacity=".5"><circle cx="14" cy="70" r="2"/><circle cx="32" cy="70" r="2"/><circle cx="50" cy="70" r="2"/><circle cx="68" cy="70" r="2"/><circle cx="86" cy="70" r="2"/></g><circle cx="64" cy="50" r="15" fill="#fff" stroke="${a}" stroke-width="3.5"/><text x="64" y="56" text-anchor="middle" font-size="17" font-weight="700" fill="${a}" font-family="Inter,sans-serif">7</text><path d="M30 26q20-14 40 0" stroke="${b}" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+  timer: (a, b, c) => `<rect x="42" y="10" width="16" height="8" rx="3" fill="${a}"/><circle cx="50" cy="56" r="34" fill="#fff" stroke="${a}" stroke-width="4"/><path d="M50 56V28A28 28 0 0 1 78 56Z" fill="${b}" opacity=".85"/><path d="M50 56V32" stroke="${a}" stroke-width="4" stroke-linecap="round"/><circle cx="50" cy="56" r="4" fill="${a}"/><path d="M76 24l6-6" stroke="${a}" stroke-width="4" stroke-linecap="round"/>`,
+  door: (a, b, c) => `<rect x="22" y="12" width="42" height="72" rx="4" fill="${c}" stroke="${a}" stroke-width="4"/><path d="M64 12l20 8v58l-20 6z" fill="${b}" stroke="${a}" stroke-width="3" stroke-linejoin="round"/><circle cx="72" cy="50" r="3" fill="#fff"/><path d="M6 92h30m-9-8l9 8l-9 8" stroke="${a}" stroke-width="4.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
+  tea: (a, b, c) => `<path d="M20 42h50v16a25 25 0 0 1-25 25a25 25 0 0 1-25-25z" fill="#fff" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><path d="M22 48h46v10a23 23 0 0 1-23 21a23 23 0 0 1-23-21z" fill="${b}" opacity=".55"/><path d="M70 50h6a9 9 0 0 1 0 18h-8" fill="none" stroke="${a}" stroke-width="4" stroke-linecap="round"/><ellipse cx="45" cy="88" rx="30" ry="5" fill="${c}"/><g fill="none" stroke="${b}" stroke-width="4" stroke-linecap="round"><path d="M34 32q-5-7 0-14"/><path d="M48 32q-5-7 0-14"/></g><path d="M82 12c6 8 10 12 10 18a10 10 0 0 1-20 0c0-6 4-10 10-18z" fill="${b}"/>`,
+  chat: (a, b, c) => `<rect x="6" y="14" width="60" height="38" rx="13" fill="${b}"/><path d="M20 50l-3 16l18-14z" fill="${b}"/><rect x="32" y="42" width="60" height="40" rx="13" fill="#fff" stroke="${a}" stroke-width="4"/><path d="M76 80l5 14l-18-12z" fill="#fff" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><g fill="${a}"><circle cx="50" cy="62" r="4"/><circle cx="62" cy="62" r="4"/><circle cx="74" cy="62" r="4"/></g><rect x="18" y="28" width="30" height="5" rx="2.5" fill="#fff" opacity=".8"/>`,
+  trend: (a, b, c) => `<path d="M10 14v76h82" stroke="${c}" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M16 26L38 42L58 54L84 74" stroke="${a}" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><g fill="#fff" stroke="${a}" stroke-width="3.5"><circle cx="16" cy="26" r="5"/><circle cx="38" cy="42" r="5"/><circle cx="58" cy="54" r="5"/></g><circle cx="80" cy="28" r="14" fill="${b}"/><path d="M73 28l5 5l9-10" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`,
+  clipboard: (a, b, c) => `<rect x="20" y="14" width="60" height="76" rx="9" fill="#fff" stroke="${a}" stroke-width="4"/><rect x="36" y="7" width="28" height="14" rx="6" fill="${a}"/><g fill="${c}"><rect x="42" y="36" width="28" height="6" rx="3"/><rect x="42" y="54" width="28" height="6" rx="3"/></g><circle cx="33" cy="39" r="4.5" fill="${b}"/><circle cx="33" cy="57" r="4.5" fill="${b}"/><g transform="rotate(-35 50 78)"><rect x="36" y="71" width="28" height="14" rx="7" fill="${c}" stroke="${a}" stroke-width="3"/><path d="M50 71h7a7 7 0 0 1 0 14h-7z" fill="${b}"/></g>`,
+  alarm: (a, b, c) => `<circle cx="50" cy="12" r="4.5" fill="${a}"/><path d="M50 18c-16 0-23 12-23 28v13l-8 11h62l-8-11V46c0-16-7-28-23-28z" fill="#fff" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><circle cx="50" cy="82" r="7" fill="${b}"/><g fill="none" stroke="${b}" stroke-width="4" stroke-linecap="round"><path d="M12 36q-5 11 0 22"/><path d="M88 36q5 11 0 22"/></g><path d="M50 32v16l10 6" stroke="${a}" stroke-width="4" fill="none" stroke-linecap="round"/>`,
+  shield: (a, b, c) => `<path d="M50 8L84 21V48C84 68 69 83 50 92C31 83 16 68 16 48V21Z" fill="#fff" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><g transform="rotate(-35 50 50)"><rect x="28" y="40" width="44" height="21" rx="10.5" fill="${c}" stroke="${a}" stroke-width="3"/><path d="M50 40h11a10.5 10.5 0 0 1 0 21h-11z" fill="${b}"/></g>`,
+  pin: (a, b, c) => `<ellipse cx="50" cy="90" rx="24" ry="5" fill="${c}"/><ellipse cx="50" cy="90" rx="12" ry="2.5" fill="${b}" opacity=".6"/><path d="M50 8c-17 0-27 12-27 27c0 21 27 52 27 52s27-31 27-52c0-15-10-27-27-27z" fill="${b}" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><circle cx="50" cy="35" r="11" fill="#fff"/>`,
+  branch: (a, b, c) => `<circle cx="50" cy="86" r="7" fill="${a}"/><path d="M50 79V58M50 58C50 42 24 46 24 30M50 58C50 42 76 46 76 30" stroke="${a}" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="24" cy="22" r="11" fill="${c}" stroke="${a}" stroke-width="3.5"/><circle cx="76" cy="22" r="11" fill="${b}" stroke="${a}" stroke-width="3.5"/><path d="M70 22l4 4l8-9" stroke="#fff" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 17l10 10M29 17l-10 10" stroke="${a}" stroke-width="3" stroke-linecap="round"/>`,
+  route: (a, b, c) => `<path d="M18 88C62 90 72 62 40 56C8 50 28 28 70 24" stroke="${c}" stroke-width="15" fill="none" stroke-linecap="round"/><path d="M18 88C62 90 72 62 40 56C8 50 28 28 70 24" stroke="#fff" stroke-width="3" fill="none" stroke-dasharray="2 8" stroke-linecap="round"/><circle cx="18" cy="88" r="7" fill="${a}"/><path d="M72 6v32" stroke="${a}" stroke-width="4" stroke-linecap="round"/><path d="M72 8l22 7l-22 8z" fill="${b}" stroke="${a}" stroke-width="2.5" stroke-linejoin="round"/>`,
+  kit: (a, b, c) => `<path d="M36 32v-8a7 7 0 0 1 7-7h14a7 7 0 0 1 7 7v8" stroke="${a}" stroke-width="4" fill="none"/><rect x="12" y="30" width="76" height="56" rx="11" fill="#fff" stroke="${a}" stroke-width="4"/><rect x="44" y="42" width="12" height="32" rx="3" fill="${b}"/><rect x="34" y="52" width="32" height="12" rx="3" fill="${b}"/>`,
+  moon: (a, b, c) => `<path d="M60 10A40 40 0 1 0 90 66A32 32 0 0 1 60 10z" fill="#fff" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><path d="M52 24A30 30 0 0 0 28 58" stroke="${c}" stroke-width="4" fill="none" stroke-linecap="round"/><g fill="${b}"><path d="M78 18l3 7l7 3l-7 3l-3 7l-3-7l-7-3l7-3z"/><path d="M88 46l2 4l4 2l-4 2l-2 4l-2-4l-4-2l4-2z"/></g>`,
+  pause: (a, b, c) => `<circle cx="50" cy="50" r="46" fill="none" stroke="${c}" stroke-width="3" stroke-dasharray="3 7" stroke-linecap="round"/><circle cx="50" cy="50" r="34" fill="#fff" stroke="${a}" stroke-width="4"/><rect x="36" y="34" width="10" height="32" rx="4" fill="${b}"/><rect x="54" y="34" width="10" height="32" rx="4" fill="${b}"/>`,
+  breath: (a, b, c) => `<path d="M10 36H60a11 11 0 1 0-11-11" stroke="${a}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M10 54H80a11 11 0 1 1-11 11" stroke="${b}" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M10 72H46" stroke="${c}" stroke-width="5" stroke-linecap="round"/><g fill="${c}"><circle cx="78" cy="30" r="3.5"/><circle cx="88" cy="40" r="2.5"/></g>`,
+  relax: (a, b, c) => `<circle cx="50" cy="22" r="13" fill="${b}"/><path d="M22 92C22 62 34 46 50 46C66 46 78 62 78 92Z" fill="#fff" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><g fill="none" stroke="${a}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 36v18m-7-7l7 8l7-8"/><path d="M88 36v18m-7-7l7 8l7-8"/></g>`,
+  small: (a, b, c) => `<rect x="14" y="14" width="72" height="16" rx="8" fill="${c}" opacity=".6"/><rect x="10" y="38" width="80" height="24" rx="12" fill="#fff" stroke="${a}" stroke-width="4"/><circle cx="26" cy="50" r="7" fill="${b}"/><path d="M22.5 50l3 3l5-6" stroke="#fff" stroke-width="2.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="40" y="46" width="38" height="8" rx="4" fill="${c}"/><rect x="14" y="70" width="72" height="16" rx="8" fill="${c}" opacity=".6"/>`,
+  faces: (a, b, c) => `<circle cx="20" cy="56" r="16" fill="${c}"/><circle cx="50" cy="44" r="21" fill="#fff" stroke="${a}" stroke-width="4"/><circle cx="80" cy="56" r="16" fill="${b}"/><g fill="${a}"><circle cx="44" cy="40" r="2.6"/><circle cx="56" cy="40" r="2.6"/><circle cx="15" cy="52" r="2"/><circle cx="25" cy="52" r="2"/><circle cx="75" cy="52" r="2"/><circle cx="85" cy="52" r="2"/></g><g fill="none" stroke="${a}" stroke-width="3" stroke-linecap="round"><path d="M42 52q8 7 16 0"/><path d="M14 63q6-5 12 0"/><path d="M74 61q6 6 12 0"/></g>`,
+  bodyspot: (a, b, c) => `<circle cx="50" cy="18" r="11" fill="${c}" stroke="${a}" stroke-width="3.5"/><path d="M26 92V50a13 13 0 0 1 13-13h22a13 13 0 0 1 13 13v42z" fill="#fff" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><circle cx="50" cy="58" r="20" fill="${b}" opacity=".28"/><circle cx="50" cy="58" r="12" fill="${b}" opacity=".45"/><circle cx="50" cy="58" r="6" fill="${b}"/>`,
+  waves: (a, b, c) => `<circle cx="72" cy="24" r="11" fill="#fff" stroke="${a}" stroke-width="3.5"/><path d="M0 50q12-16 25 0t25 0t25 0t25 0V94H0z" fill="${c}"/><path d="M0 62q12-16 25 0t25 0t25 0t25 0V94H0z" fill="${b}"/><path d="M0 76q12-14 25 0t25 0t25 0t25 0V94H0z" fill="${a}" opacity=".85"/>`,
+  walk: (a, b, c) => `<path d="M6 92h88" stroke="${c}" stroke-width="5" stroke-linecap="round"/><circle cx="54" cy="16" r="10" fill="${a}"/><g fill="none" stroke="${a}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M52 30L47 58L32 82"/><path d="M47 58L64 70L68 88"/><path d="M52 36L68 46"/><path d="M52 36L36 48"/></g><g fill="${b}"><circle cx="84" cy="40" r="4"/><circle cx="14" cy="34" r="3"/></g>`,
+  glass: (a, b, c) => `<path d="M24 14h46l-6 72H30z" fill="#fff" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><path d="M27 40h40l-3 42H30z" fill="${b}" opacity=".7"/><path d="M34 48v22" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".8"/><circle cx="76" cy="72" r="15" fill="#E58E80" stroke="${a}" stroke-width="3"/><path d="M76 58q1-8 6-10" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M78 56q8-6 12 0q-6 5-12 0z" fill="#8DB89A"/>`,
+  heart: (a, b, c) => `<circle cx="50" cy="52" r="42" fill="${c}" opacity=".45"/><path d="M50 84C14 60 14 26 34 22C44 20 50 28 50 33C50 28 56 20 66 22C86 26 86 60 50 84Z" fill="${b}" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><path d="M30 38q3-6 9-6" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/><g fill="${a}"><path d="M86 14l2 5l5 2l-5 2l-2 5l-2-5l-5-2l5-2z"/></g>`,
+  trophy: (a, b, c) => `<path d="M30 12h40v24a20 20 0 0 1-40 0z" fill="#fff" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><path d="M30 20H16v8a14 14 0 0 0 14 14M70 20h14v8a14 14 0 0 1-14 14" fill="none" stroke="${a}" stroke-width="4"/><rect x="44" y="56" width="12" height="16" fill="${a}"/><rect x="30" y="72" width="40" height="12" rx="4" fill="${b}"/><path d="M50 20l4 8l9 1l-7 6l2 9l-8-5l-8 5l2-9l-7-6l9-1z" fill="${b}"/>`,
+  sunrise: (a, b, c) => `<path d="M24 66a26 26 0 0 1 52 0z" fill="${b}"/><g stroke="${a}" stroke-width="4" stroke-linecap="round"><path d="M50 22v-10"/><path d="M20 36l-7-7"/><path d="M80 36l7-7"/><path d="M8 58H4"/><path d="M92 58h4"/></g><path d="M4 66h92" stroke="${a}" stroke-width="4" stroke-linecap="round"/><g stroke="${c}" stroke-width="4" stroke-linecap="round"><path d="M20 78h60"/><path d="M32 90h36"/></g>`,
+  stairs: (a, b, c) => `<path d="M8 90H32V70H52V50H72V30H92V90Z" fill="#fff" stroke="${a}" stroke-width="4" stroke-linejoin="round"/><circle cx="42" cy="58" r="8" fill="${b}"/><path d="M62 38v-20" stroke="${a}" stroke-width="3.5" stroke-linecap="round"/><path d="M62 18l16 5l-16 6z" fill="${b}"/>`
+};
+function fpArt(k, n) {
+  const c = FP_PAL[n % 6], g = 'fpg' + n, ico = P[(FP_ICONS[k] || [])[n]] || P.sparkle;
+  const sx = [232, 70, 236, 64, 228, 76][n % 6];   // sun moves a little from step to step
+  const tree = (x, y, s, col) => `<g transform="translate(${x} ${y}) scale(${s})" fill="${col}"><path d="M0 -36 L9 -16 H5 L12 -2 H7 L15 12 H-15 L-7 -2 H-12 L-5 -16 H-9Z"/><rect x="-2" y="12" width="4" height="7" rx="1"/></g>`;
+  const refl = [0, 1, 2, 3, 4].map(i => `<rect x="${sx - 14 + i * 2}" y="${158 + i * 9}" width="${28 - i * 4}" height="2.4" rx="1.2" fill="#fff" opacity="${.7 - i * .1}"/>`).join('');
+  return `<svg viewBox="0 0 300 240" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs>
+    <linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c[2]}" stop-opacity=".85"/><stop offset=".5" stop-color="${c[0]}"/><stop offset="1" stop-color="#fff"/></linearGradient>
+    <radialGradient id="${g}s"><stop offset="0" stop-color="#fff" stop-opacity="1"/><stop offset=".35" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    <linearGradient id="${g}l" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c[2]}"/><stop offset="1" stop-color="${c[3]}"/></linearGradient>
+    <linearGradient id="${g}m" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c[3]}"/><stop offset="1" stop-color="${c[2]}"/></linearGradient>
+    <linearGradient id="${g}d" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c[4]}"/><stop offset="1" stop-color="${c[5]}"/></linearGradient>
+    <linearGradient id="${g}h" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".75"/></linearGradient></defs>
+    <rect width="300" height="240" fill="url(#${g})"/>
+    <circle cx="${sx}" cy="70" r="92" fill="url(#${g}s)"/><circle cx="${sx}" cy="70" r="26" fill="#fff"/><circle cx="${sx}" cy="70" r="19" fill="#fff"/>
+    <g fill="#fff" opacity=".9"><rect x="30" y="46" width="60" height="13" rx="6.5"/><rect x="48" y="35" width="36" height="13" rx="6.5"/><rect x="${sx > 150 ? 70 : 196}" y="104" width="54" height="11" rx="5.5" opacity=".75"/></g>
+    <g fill="none" stroke="${c[5]}" stroke-width="1.7" stroke-linecap="round" opacity=".5"><path d="M${sx > 150 ? 92 : 206} 86q5-6 10 0q5-6 10 0"/><path d="M${sx > 150 ? 118 : 232} 70q4-5 8 0q4-5 8 0"/></g>
+    <path d="M-10 150 L38 100 L66 126 L104 84 L142 124 L176 98 L214 128 L250 96 L310 150Z" fill="url(#${g}m)" opacity=".75"/>
+    <path d="M104 84 L92 98 L100 96 L106 104 L112 96 L120 99Z M250 96 L240 107 L246 105 L251 111 L257 105 L262 108Z" fill="#fff" opacity=".7"/>
+    <path d="M-10 150 C40 128 84 124 130 138 S230 146 310 128 V160 H-10Z" fill="${c[3]}" opacity=".85"/>
+    <rect y="120" width="300" height="48" fill="url(#${g}h)"/>
+    <rect y="146" width="300" height="100" fill="url(#${g}l)"/>
+    ${refl}
+    <g fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".55"><path d="M40 176q14-5 28 0t28 0"/><path d="M170 190q16-5 32 0t32 0"/><path d="M92 206q12-4 24 0t24 0"/></g>
+    <path d="M-10 212 C30 176 82 166 120 190 C138 202 124 232 100 250 H-10Z" fill="url(#${g}d)"/>
+    <path d="M310 206 C272 174 224 170 190 192 C174 204 190 232 214 250 H310Z" fill="url(#${g}d)" opacity=".92"/>
+    ${tree(26, 186, 1, c[5])}${tree(52, 196, .7, c[5])}${tree(274, 184, .95, c[5])}${tree(250, 194, .65, c[5])}
+    <g fill="#fff" opacity=".85"><circle cx="40" cy="96" r="2.4"/><circle cx="262" cy="130" r="2"/><circle cx="118" cy="22" r="2.2"/><circle cx="170" cy="38" r="1.6"/><circle cx="12" cy="130" r="1.8"/></g>
+    <g class="fx-badge"><circle cx="150" cy="112" r="78" fill="url(#${g}s)" opacity=".95"/><ellipse cx="150" cy="176" rx="52" ry="7" fill="${c[5]}" opacity=".16"/>
+      <circle cx="150" cy="112" r="62" fill="#fff" opacity=".93"/><circle cx="150" cy="112" r="54" fill="${c[0]}"/>
+      <g transform="translate(110 72) scale(.8)">${(FP_MOT[(FP_MAP[k] || [])[n]] || FP_MOT.heart)(c[5], c[3], c[2])}</g></g></svg>`;
+}
+function fpSteps(k) {
+  const f = FOCUS[k], fin = S.focusDone === today(), tot = f.steps.length, n = Math.min(FP.step, tot - 1), st = f.steps[n], pct = Math.round(FP.max / tot * 100);
+  const x = 46 + (tot > 1 ? n / (tot - 1) : 0) * 208, y = [122, 88, 116, 82, 110, 78][n % 6];
+  return `<div class="fx-prog"><span>Step ${n + 1} of ${tot}</span><b>${pct}% done</b></div><div class="fx-seg">${f.steps.map((_, i) => `<i class="${i < FP.max ? 'done' : i === FP.max ? 'now' : ''}${i === n ? ' vw' : ''}${i <= FP.max ? ' go' : ''}"${i <= FP.max ? ` data-act="fp-goto" data-i="${i}" data-k="${k}" role="button" aria-label="Go to step ${i + 1}"` : ''}></i>`).join('')}</div>
+    <div class="fx-art">${fpArt(k, n)}<span class="fx-time" id="fp-timer">0:00</span></div>
+    <div class="fx-card"><span class="fx-num">${String(n + 1).padStart(2, '0')}</span><small class="fx-eye">${ic('sparkle', 14, 2)}${FP.step < FP.max || fin ? 'Review' : 'Do this now'}</small><h2 class="fx-st">${st[0]}</h2><p class="fx-sd">${st[1].replace(/ — /g, ' - ')}</p></div>
+    <div class="fx-nav">${n > 0 ? `<button class="fx-back" data-act="fp-back" data-k="${k}" aria-label="Previous step">${ic('back', 22, 2.2)}</button>` : ''}<button class="btn fx-next" id="fp-next" data-act="fp-next" data-k="${k}" disabled>Next step</button></div>`;
+}
+function fpTick() {
+  const b = $('#fp-next'); if (!b) return;
+  const fin = S.focusDone === today(), left = fin || FP.step < FP.max ? 0 : Math.max(0, Math.ceil(FP_MIN - (Date.now() - FP.t0) / 1000)), f = FOCUS[b.dataset.k], last = FP.step === f.steps.length - 1;
+  const locked = !fin && FP.step === FP.max;
+  b.style.setProperty('--p', Math.min(100, (Date.now() - FP.t0) / (FP_MIN * 10)) + '%'); b.disabled = left > 0; b.textContent = left > 0 ? 'Next step · ' + left + 's' : last ? (fin ? 'Done' : FP.step === FP.max ? 'Finish activity' : 'Next step') : 'Next step';
+  const t = $('#fp-timer'); if (t) { const s = Math.floor((Date.now() - FP.t00) / 1000); t.textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+}
+function focusPage(k) {
+  const f = FOCUS[k]; if (!f) return; const fin = S.focusDone === today();
+  S.inAct = fin ? null : k; save();
+  FP.max = fin ? f.steps.length : (S.fpProg && S.fpProg.d === today() && S.fpProg.k === k ? S.fpProg.n : 0); FP.step = fin ? 0 : FP.max; FP.t0 = FP.t00 = Date.now();
+  const day = Math.max(1, S.day || 1), dIn = ((day - 1) % 7) + 1;
+  const l = pushLayer(`<div class="fx-wrap"><div class="fx-top"><button class="fx-x" data-act="close-layer" aria-label="Close">${ic('x', 20, 2.2)}</button><span class="fx-wk">Week ${Math.ceil(day / 7)} · Day ${dIn} · Activity</span><button class="fx-help" data-act="help">Help</button></div>
+    <h1 class="fx-title">${f.page}</h1><div id="fp-steps">${fpSteps(k)}</div></div>`, 'fx-layer');
+  const t = setInterval(fpTick, 500); l._cleanup = () => clearInterval(t); fpTick();
+}
+function fpComplete(k, layer) {
+  if (S.focusDone !== today()) { S.focusDone = today(); S.activities++; earn(20, 'Activity: ' + FOCUS[k].page); }
+  S.lastAct = k; S.fpProg = null; S.inAct = null; save(); popLayer(layer); if (tab === 'home') renderHome(); setTimeout(claimPopup, 400);
+}
+function claimPopup() {
+  if ($$('.layer').length) return;
+  const k = S.lastAct || Object.keys(FOCUS)[0], f = FOCUS[k] || FOCUS.cravings, now = Date.now();
+  const wk = S.txns.filter(x => /^Activity/.test(x.t) && now - new Date(x.d).getTime() < 8 * 864e5).length, n = Math.min(wk, 6);
+  const today$ = 10 + 20;   // reflection $1.00 + activity $2.00
+  const day = Math.max(1, S.day || 1), dIn = ((day - 1) % 7) + 1;
+  const bonusLine = wk >= 6 ? 'Weekly bonus unlocked · ' + usd(15) + ' added' : (6 - wk) + ' more ' + (6 - wk === 1 ? 'activity' : 'activities') + ' this week for the ' + usd(15) + ' bonus';
+  pushLayer(`<div class="fx-wrap fx-done"><div class="fx-top"><span class="fx-wk">Week ${Math.ceil(day / 7)} · Day ${dIn} · Complete</span><button class="fx-help" data-act="help">Help</button></div>
+    <div class="fx-steps2"><div><i></i><span>${ic('check', 14, 2.8)}Reflection done</span></div><div><i></i><span>${ic('check', 14, 2.8)}Activity done</span></div></div>
+    <div class="fx-hero"><svg viewBox="0 0 220 150" aria-hidden="true"><circle cx="110" cy="75" r="72" fill="#E4EEE6"/><circle cx="110" cy="75" r="54" fill="#D3E4D7"/><circle class="fx-halo2" cx="110" cy="75" r="40" fill="#fff" opacity=".85"/><circle cx="110" cy="75" r="34" fill="#fff"/>
+      <g transform="translate(84 49) scale(2.17)" fill="none" stroke="#3F6B4E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${P.checkc}</g>
+      <g fill="#E0B454"><path d="M26 34l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" opacity=".9"/><path d="M190 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" opacity=".8"/><circle cx="184" cy="112" r="4" opacity=".7"/><circle cx="34" cy="108" r="3" opacity=".6"/></g></svg>
+      <h1 class="fx-title">${k === 'cravings' ? 'You rode it out.' : 'Well done.'}</h1><p class="fx-sub">Today’s reflection and activity are complete.</p></div>
+    <div class="fx-tiles"><div class="fx-tile"><span class="fx-tic">${ic('bolt', 18, 2)}</span><b>+${usd(20)}</b><span>Activity earnings</span></div></div>
+    <div class="fx-bonus">${ic('coin', 16, 2)}<span>${bonusLine}</span></div>
+    <button class="btn fx-next" data-act="fx-wallet">Go to Rewards</button></div>`, 'fx-layer');
+  setTimeout(confetti, 300);
+}
+
+/* ═════════ WALLET — this week ═════════ */
+function applyTheme(t) {
+  S.theme = t === 'dark' ? 'dark' : 'light'; save();
+  document.documentElement.dataset.theme = S.theme;
+  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = S.theme === 'dark' ? '#0F1318' : '#F5F7F9';
+}
+applyTheme(S.theme);
+function weekLabel() {
+  if (WK.back === 0) return 'This week'; if (WK.back === 1) return 'Last week';
+  const d = weekDays(), f = x => fmtD(x);
+  return f(d[0].d) + ' – ' + f(d[6].d);
+}
+function weekCard() {
+  const days = weekDays(), n = days.filter(x => x.h).length, earned = days.reduce((a, x) => a + x.e, 0), need = Math.max(6 - n, 0);
+  const chip = WK.back ? (need ? '' : '<span class="wk-chip">+1 Bonus</span>') : `<span class="wk-chip">${need ? need + ' to bonus' : '+1 Bonus'}</span>`;
+  return `<div class="sec"><div class="wk-head"><div class="eyebrow">${weekLabel()}</div><div class="wk-nav"><button data-act="wk-nav" data-d="1" aria-label="Previous week">${ic('back', 16, 2.4)}</button><button data-act="wk-nav" data-d="-1" aria-label="Next week" ${WK.back ? '' : 'disabled'}>${ic('next', 16, 2.4)}</button></div></div><div class="wk-card">
+    <div class="wk-tile"><small>Reflections</small><b>${n} of 7</b>${chip}</div>
+    <div class="wk-tile"><small>Activities</small><b>${WK.back ? Math.max(n - 1, 0) : n + 2}</b></div>
+    <div class="wk-tile"><small>Earned</small><b class="g">+${usd(earned)}</b></div></div></div>`;
+}
+
+/* ═════════ wiring ═════════ */
+Object.assign(ACT, {
+  help: () => helpSheet(),
+  'pf-rem-toggle': () => { S.remindOn = S.remindOn === false; save(); renderMe(); toast(S.remindOn ? 'Daily reminders enabled' : 'Daily reminders disabled'); },
+  'pf-theme': el => { applyTheme(el.dataset.k); renderMe(); },
+  'pf-lang': el => { S.profile.lang = el.dataset.k; save(); renderMe(); toast(el.dataset.k === 'es' ? 'Idioma: Español' : 'Language: English'); },
+  'ci-exit': () => {
+    const l = pushLayer(`<div class="sheet cx-sheet"><span class="grab"></span><h2>Are you sure you want to close?</h2><p>Your answers for today’s reflection won’t be saved, and you’ll miss out on today’s reward.</p>
+      <button class="btn" data-act="cx-stay">Keep going</button><button class="btn ghost cx-yes" data-act="cx-yes">Yes, close</button></div>`, 'sheet-wrap');
+    l.addEventListener('click', e => { if (e.target === l) popLayer(l); });
+  },
+  'cx-stay': el => popLayer(layerOf(el)),
+  'cx-yes': el => { popLayer(layerOf(el)); ACT['ci-close'](); },
+  'wk-nav': el => { if (el.disabled) return; WK.back = Math.max(0, WK.back + +el.dataset.d); const y = $('#v-wallet').scrollTop; renderWallet(); $('#v-wallet').scrollTop = y; },
+  'focus-open': el => focusPage(el.dataset.k),
+  'ci-later': () => endCheckin('home'),
+  'fx-wallet': () => { $$('.layer').forEach(popLayer); go('wallet'); },
+  'fpr-go': el => { popLayer(layerOf(el)); focusPage(el.dataset.k); },
+  'fp-next': el => {
+    const k = el.dataset.k, f = FOCUS[k], fin = S.focusDone === today(), show = () => { $('#fp-steps').innerHTML = fpSteps(k); fpTick(); };
+    if (el.disabled) return;
+    if (fin) { FP.step++; if (FP.step >= f.steps.length) return popLayer(layerOf(el)); return show(); }
+    if (FP.step < FP.max) { FP.step++; return show(); }       // revisiting an earlier step
+    if ((Date.now() - FP.t0) / 1000 < FP_MIN) return;
+    FP.step++; FP.max = FP.step; S.fpProg = { d: today(), k, n: FP.max }; save();
+    if (FP.step >= f.steps.length) return fpComplete(k, layerOf(el));
+    FP.t0 = Date.now(); show();
+  },
+  'fp-goto': el => { const i = +el.dataset.i; if (i <= FP.max && i !== FP.step) { FP.step = i; $('#fp-steps').innerHTML = fpSteps(el.dataset.k); fpTick(); } },
+  'fp-back': el => { if (FP.step > 0) { FP.step--; $('#fp-steps').innerHTML = fpSteps(el.dataset.k); fpTick(); } },
+  'fp-why': el => { const p = el.nextElementSibling; p.hidden = !p.hidden; el.classList.toggle('open', !p.hidden); },
+  'fp-speak': el => { const f = FOCUS[el.dataset.k]; if (!window.speechSynthesis) return toast('Read-aloud isn’t supported on this device'); if (speechSynthesis.speaking) return speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(f.page + '. ' + f.why + '. ' + f.steps.map(x => x[0] + '. ' + x[1]).join(' ')); u.rate = .95; speechSynthesis.speak(u); },
+  'pf-add': () => openAddPerson(),
+  'ap-sw': el => { const on = !el.classList.contains('on'); el.classList.toggle('on', on); el.setAttribute('aria-checked', on); },
+  'ap-save': el => {
+    const l = layerOf(el), n = $('#ap-name').value.trim(), rel = ($('#ap-rel .on') || {}).dataset.r || 'Friend', ph = $('#ap-phone').value.trim(), em = $('#ap-email').value.trim();
+    const access = $$('.ap-feat .st-sw.on', l).map(b => b.dataset.k), cols = ['#4A90D9', '#6E9E80', '#C97B6F', '#8A6FB0', '#D8AD63', '#5E8560'];
+    S.people = [...(S.people || []), { n, r: rel, p: ph, e: em, access, i: n.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase(), c: cols[(S.people || []).length % cols.length] }]; save();
+    popLayer(l); renderMe(); toast(n + ' added to My People');
+  },
+  'pf-soon': el => soonScreen(el.dataset.t || 'Coming soon', 'gear', 'Coming soon', 'This part of your profile is on its way.'),
+  'md-crisis': () => crisisScreen(),
+  'md-urge': el => { $$('.md-layer').forEach(popLayer); setTimeout(() => openTool('urge'), 200); },
+  'md-team': () => mdLayer('Reach my support team', CONTACTS.support.map(ctRow).join('')),
+  'md-nalox': () => soonScreen('Find naloxone', 'pill', 'Naloxone finder coming soon', 'We’re building a map of pharmacies and free distribution points near you. In the meantime, call <b>988</b> or your pharmacy to ask where to get naloxone.'),
+  'md-guide': () => { $$('.md-layer').forEach(popLayer); setTimeout(() => ACT['me-replay'](), 220); },
+  'pg-info': () => toast('Tap factors below to compare how they move together'),
+  'pg-tf': el => { PG.tf = el.dataset.tf; if (PG.tf === 'W') PG.off = 0; pgPaint(); },
+  'pg-wk': el => { PG.off = Math.max(0, Math.min(PG_MAXOFF, PG.off + +el.dataset.d)); pgPaint(); },
+  'pg-item': el => {
+    const k = el.dataset.k, i = PG.items.indexOf(k);
+    if (i >= 0) { if (PG.items.length > 1) PG.items.splice(i, 1); } else if (PG.items.length < 2) PG.items.push(k); else PG.items[1] = k;
+    pgPaint();
+  },
+  'cm-open': () => composeSheet(),
+  'cm-submit': () => {
+    const t = CM.draft.trim(); if (!t) return;
+    POSTS.unshift(mk(Date.now(), 'you', 'blue', 'community', 'just now', t, 0, 0, [], { mine: true }));
+    CM.draft = ''; popLayer(layerOf($('#cm-text'))); cmFeed(); toast('Posted anonymously');
+  },
+  'cm-react': el => {
+    const p = POSTS.find(x => x.id == el.dataset.id), r = REACT.find(x => x[0] === el.dataset.r), on = !p['r_' + r[0]];
+    p['r_' + r[0]] = on; p[r[3]] = (p[r[3]] || 0) + (on ? 1 : -1); if (p.mine) CM.support += on ? 1 : -1; cmFeed();
+  },
+  'cm-flag': el => { const id = +el.dataset.id; CM.flagged.has(id) ? CM.flagged.delete(id) : (CM.flagged.add(id), toast('Flagged for review')); cmFeed(); },
+  'cm-comments': el => commentsSheet(el.dataset.id),
+  'cm-quick': el => { const p = POSTS.find(x => x.id == el.dataset.id); p.replies.push({ user: 'you', text: el.dataset.t }); csRefresh(p); },
+  'cm-send': el => { const p = POSTS.find(x => x.id == el.dataset.id), i = $('#rp-' + p.id), t = i && i.value.trim(); if (!t) return; p.replies.push({ user: 'you', text: t }); csRefresh(p); },
+  'cm-rooms': () => roomsSheet(),
+  'cm-room': el => { CM.room = el.dataset.r; const l = layerOf(el); if (l && l.classList.contains('sheet-wrap')) popLayer(l); cmFeed(); const f = $('#cm-feed'); if (f) f.scrollIntoView({ block: 'start', behavior: 'smooth' }); },
+  'cm-soon': el => soonScreen(el.dataset.t, 'users', 'Coming soon', 'This part of Community is on its way. For now you can share in the rooms below.')
+});
+document.addEventListener('input', e => { if (e.target.id === 'cm-text') { CM.draft = e.target.value; $('#cm-post').disabled = !CM.draft.trim(); $('#cm-count').textContent = CM.draft.length ? CM.draft.length + ' characters' : ''; } });
+
+document.addEventListener('click', e => { const b = e.target.closest('#ap-rel button'); if (b) { $$('#ap-rel button').forEach(x => x.classList.toggle('on', x === b)); } });
+document.addEventListener('change', e => {
+  if (e.target.id !== 'pf-time') return;
+  S.remindTime = e.target.value; const h = +e.target.value.slice(0, 2); S.remind = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening'; save(); renderMe(); toast('Reflection time set to ' + remindTime() + ' PT');
+});
+
+
+/* ═════════ Reflection welcome — full screen, replaces the "Time for your reflection" sheet ═════════ */
+function triggerSheet() {
+  if (S.remindOn === false || checkedInToday() || $$('.layer').length) return;
+  const first = !S.history.length, day = Math.max(1, S.day || 1), dIn = ((day - 1) % 7) + 1;
+  pushLayer(`<div class="rd-welcome"><div class="rd-pad">
+    <div class="rd-top rd-hdr"><span class="rd-wk">Week ${Math.ceil(day / 7)} · Day ${dIn}</span><button class="rd-help" data-act="help">${ic('plus', 14, 2.8)}Help</button></div>
+    <div class="rd-prog"><div class="seg"><i></i><i></i></div>
+      <div class="lbl"><span>Reflection <b>+${usd(10)}</b></span><span>Activity <b>+${usd(20)}</b></span></div></div>
+    <h1 class="rd-h1"><span class="g">${first ? 'Welcome,' : greeting() + ','}</span> ${esc(S.name || 'friend')}</h1>
+    <p class="rd-p">${first ? 'Your first week starts today.' : 'One minute for you, then one small step.'}</p>
+        <div class="rd-card rd-cicard" data-act="trigger-go" role="button" tabindex="0" aria-label="Start reflection">
+      <div class="rd-art rd-ci-art"><span class="rd-pulse p1"></span><span class="rd-pulse p2"></span><button class="rd-spin" data-act="trigger-go" aria-label="Start reflection">
+        <svg class="rd-spin-ring" viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="92" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="4 10" stroke-linecap="round"/><circle cx="100" cy="8" r="6" fill="currentColor"/></svg>
+        <span class="rd-spin-core"><b>Reflect</b></span></button><span class="rd-tap">Tap to begin</span></div>
+      <h2 class="rd-cardh">${first ? 'Your first reflection. One question at a time, no right answers.' : 'How are you doing today?'}</h2>
+      ${first ? '' : '<p class="rd-cardp">One question at a time. Take your time.</p>'}
+      </div></div></div>`, 'rd-layer');
+}
+
+
+
+/* little line graph of recent recovery scores (last 7 reflections); a single score shows a dot with a dashed path ahead */
+function rrTrend(prevs, cur) {
+  const v = prevs.length && prevs[prevs.length - 1] === cur && CI && CI.saved ? prevs : prevs.concat(cur);
+  const w = 132, h = 62, py = 8, px = 6;
+  if (v.length < 2) {
+    const y = h - py - (cur / 100) * (h - 2 * py);
+    return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" aria-hidden="true"><path d="M${px} ${y.toFixed(1)}H${w - px}" stroke="#B9CCE0" stroke-width="2" stroke-dasharray="3 6" stroke-linecap="round"/><circle cx="${px + 3}" cy="${y.toFixed(1)}" r="9" fill="#6C9FCC" opacity=".18"/><circle cx="${px + 3}" cy="${y.toFixed(1)}" r="5" fill="#5B8FC0" stroke="#fff" stroke-width="2"/></svg><small>Your trend builds here</small>`;
+  }
+  const mn = Math.max(0, Math.min(...v) - 8), mx = Math.min(100, Math.max(...v) + 8), st = (w - 2 * px) / (v.length - 1);
+  const pts = v.map((x, i) => [px + i * st, h - py - ((x - mn) / ((mx - mn) || 1)) * (h - 2 * py)]);
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' '), l = pts[pts.length - 1];
+  return `<svg viewBox="0 0 ${w} ${h}" width="100%" height="${h}" aria-hidden="true"><defs><linearGradient id="rtg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6C9FCC" stop-opacity=".28"/><stop offset="1" stop-color="#6C9FCC" stop-opacity="0"/></linearGradient></defs><path d="${d} L${l[0].toFixed(1)} ${h} L${px} ${h}Z" fill="url(#rtg)"/><path d="${d}" fill="none" stroke="#5B8FC0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="${l[0].toFixed(1)}" cy="${l[1].toFixed(1)}" r="4.5" fill="#5B8FC0" stroke="#fff" stroke-width="2"/></svg><small>Last ${v.length} reflections</small>`;
+}
+
+/* ═════════ GATE — Home stays hidden until today's reflection and activity are done ═════════ */
+const GATE_ON = !/notrigger|nogate/.test(location.search);
+const gateOn = () => GATE_ON && !!S.onboarded && (!checkedInToday() || S.focusDone !== today());
+const updGate = () => document.documentElement.classList.toggle('gated', gateOn());
+function gateRoute() {
+  updGate(); if (!gateOn() || $$('.layer').length) return false;
+  if (!checkedInToday()) { S.remindOn = true; triggerSheet(); return true; }
+  const last = S.history[S.history.length - 1];
+  if (last) { focusPage(S.inAct || focusKey(last)); return true; }
+  return false;
+}
+document.addEventListener('DOMContentLoaded', () => { gateRoute(); });
+let gateIdle = 0;
+setInterval(() => { updGate(); gateIdle = gateOn() && !$$('.layer').length ? gateIdle + 1 : 0; if (gateIdle >= 2) { gateIdle = 0; gateRoute(); } }, 350);
+
+/* ── Location reflection (flow from Version 2.0): map + a short survey about a place Rudra noticed ── */
+Object.assign(P, {
+  building: '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2M10 21v-3h4v3"/>',
+  users: '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M17 14c2.5 0 4 2 4 5"/>',
+  store: '<path d="M4 9l1.5-5h13L20 9"/><path d="M4 9a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0"/><path d="M5 12v8h14v-8"/>',
+  hotel: '<path d="M3 19V7M3 14h18v5M21 14v-2a3 3 0 0 0-3-3h-7v5"/><circle cx="7" cy="11" r="1.6"/>',
+  helpc: '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17v.01"/>',
+  briefcase: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2M3 13h18"/>',
+  utensils: '<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M17 3c-2 2-3 4.5-3 7h3v11"/>',
+  cup: '<path d="M5 8h12v6a5 5 0 0 1-5 5h-2a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2 2 0 0 1 0 4H17M8 3v2M12 3v2"/>',
+  bag: '<path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>',
+  meh: '<circle cx="12" cy="12" r="9"/><path d="M8 15h8M9 9.5v.01M15 9.5v.01"/>',
+  frown: '<circle cx="12" cy="12" r="9"/><path d="M8 16c1-1.5 2.5-2 4-2s3 .5 4 2M9 9.5v.01M15 9.5v.01"/>',
+  minusc: '<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>'
+});
+const LC_Q = [
+  { key: 'place', type: 'single', icons: ['home', 'building', 'users', 'store', 'hotel', 'helpc'], q: 'Which of the following best describes this place?', options: [
+    { t: 'My home' }, { t: 'A shelter, group home, or other temporary residence' }, { t: 'Someone else’s home' },
+    { t: 'A restaurant, business, public place, or other non-residential place' }, { t: 'A hotel or vacation rental', end: true }, { t: 'I do not recognize this location or was just passing by', end: true }] },
+  { key: 'activities', type: 'multi', icons: ['briefcase', 'book', 'sparkle', 'heart', 'dumbbell', 'home', 'users', 'moon', 'utensils', 'cup', 'beer', 'bag', 'drop', 'pill', 'users', 'bulb', 'pulse', 'x'], q: 'Which of the following best describes what you typically do here?', hint: 'Check all that apply.', options: [
+    'Work', 'Take classes', 'Religious or spiritual activities', 'Volunteer or community service', 'Exercise or play sports', 'Visit family or friend(s) at their home', 'Socialize', 'Relax', 'Eat a meal',
+    'Drink a non-alcoholic beverage (e.g., coffee, tea, smoothie)', 'Drink alcohol', 'Shop for food, products (e.g., clothes, cars, appliances) or services (e.g., haircut)', 'Buy alcohol (for later use; e.g., liquor store)',
+    'Get treatment to manage my recovery (e.g. counseling, talk therapy, medications)', 'Attend an NA/AA or other peer-led group to manage my recovery', 'Get general (beyond recovery) mental health care', 'Get physical health care', 'None of the above'] },
+  { key: 'pleasant', type: 'single', icons: ['smile', 'smile', 'meh', 'frown', 'frown'], q: 'Visits to this location are', options: [
+    { t: 'Always/Almost Always Pleasant' }, { t: 'Sometimes Pleasant' }, { t: 'Neither Pleasant or Unpleasant' }, { t: 'Sometimes Unpleasant' }, { t: 'Always/Almost Always Unpleasant' }] },
+  { key: 'support', type: 'single', icons: ['shield', 'heart', 'minusc', 'alert', 'alert'], q: 'Visits to this location provide', options: [
+    { t: 'Strong support to my recovery' }, { t: 'Some support to my recovery' }, { t: 'Do not affect my recovery' }, { t: 'Some risk to my recovery' }, { t: 'Strong risk to my recovery' }] }
+];
+const LC = { step: 0, ans: {}, skip: false };
+const lcT = o => typeof o === 'string' ? o : o.t;
+const LC_PIN = c => `<svg viewBox="0 0 24 24" fill="${c}" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg>`;
+function lcMap() {
+  return `<div class="lc-map"><svg class="lc-svg" viewBox="0 0 300 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="300" height="260" fill="#ECE7DE"/><rect width="300" height="16" fill="#C7DDE3"/>
+    <path d="M0 150 Q45 132 90 148 T175 160 L175 260 L0 260 Z" fill="#CFE3B8"/><rect x="210" y="24" width="90" height="80" rx="6" fill="#CFE3B8"/><path d="M-10 220 Q120 205 310 224 L310 260 L-10 260 Z" fill="#DFE9CE"/>
+    <g stroke="#fff" stroke-width="8" fill="none"><path d="M-10 74 L310 66"/><path d="M-10 182 L310 196"/><path d="M92 -10 L108 270"/><path d="M204 -10 L222 270"/></g><g stroke="#fff" stroke-width="4" fill="none"><path d="M-10 126 L310 120"/><path d="M150 -10 L150 270"/></g>
+    <g fill="#D9D3C9"><rect x="26" y="86" width="54" height="60" rx="3"/><rect x="118" y="84" width="62" height="62" rx="3"/><rect x="232" y="130" width="58" height="46" rx="3"/><rect x="28" y="200" width="48" height="34" rx="3"/><rect x="120" y="196" width="60" height="40" rx="3"/></g></svg>
+    <img class="lc-img" alt="" src="https://staticmap.openstreetmap.de/staticmap.php?center=45.5152,-122.6784&zoom=16&size=680x560&maptype=mapnik" onerror="this.remove()">
+    <span class="lc-pin lc-flag" style="top:50%;left:50%"><span class="lc-pulse"></span><span class="lc-time">30+ min</span>${LC_PIN('#C25445')}</span>
+    ${[[33, 24], [64, 31], [42, 73], [72, 62]].map(([t, l]) => `<span class="lc-pin lc-alt" style="top:${t}%;left:${l}%">${LC_PIN('#6E9E80')}</span>`).join('')}</div>`;
+}
+function lcRender() {
+  const it = LC_Q[LC.step], total = LC.skip ? 1 : LC_Q.length, sel = LC.ans[it.key], last = LC.skip || LC.step >= LC_Q.length - 1;
+  const ok = it.type === 'multi' ? Array.isArray(sel) && sel.length > 0 : !!sel;
+  $('#lc-sheet').innerHTML = `<div class="lc-top">${LC.step > 0 ? `<button class="lc-bk" type="button" data-act="lc-back" aria-label="Previous question">${ic('back', 20, 2.4)}</button>` : ''}<div class="lc-bar"><i style="width:${Math.round((LC.step + 1) / total * 100)}%"></i></div><span class="lc-cnt"><b>${LC.step + 1}</b>/${total}</span></div>
+    <div class="lc-content">${LC.step === 0 ? `<div class="lc-intro"><p>Rudra noticed you recently spent time here. A few quick questions about places you’ve visited more than once in the past 30 days.</p></div>` : ''}
+    <h2 class="lc-q">${it.q}</h2>${it.hint ? `<p class="lc-hint">${it.hint}</p>` : ''}
+    <div class="lc-opts">${it.options.map((o, i) => { const t = lcT(o), on = it.type === 'multi' ? Array.isArray(sel) && sel.includes(t) : sel === t;
+      return `<button class="lc-opt${on ? ' on' : ''}" type="button" data-act="lc-pick" data-i="${i}"><span class="lc-oi">${ic((it.icons && it.icons[i]) || 'pin', 20, 1.8)}</span><span class="lc-ot">${esc(t)}</span><span class="lc-ck ${it.type === 'multi' ? 'sq' : ''}">${on ? ic('check', 14, 3.2) : ''}</span></button>`; }).join('')}</div></div>
+    <div class="lc-foot"><button class="btn lc-next" type="button" data-act="lc-next"${ok ? '' : ' disabled'}>${last ? 'Submit' : 'Next'}</button></div>`;
+}
+Object.assign(ACT, {
+  'open-map': () => { LC.step = 0; LC.ans = {}; LC.skip = false; pushLayer(`<div class="lc-wrap"><button class="lc-exit" type="button" data-act="lc-exit" aria-label="Go back">${ic('back', 20, 2.4)}</button>${lcMap()}<div class="lc-sheet" id="lc-sheet"></div></div>`, 'lc-layer'); lcRender(); },
+  'lc-pick': el => { const it = LC_Q[LC.step], t = lcT(it.options[+el.dataset.i]);
+    if (it.type === 'multi') { let arr = LC.ans[it.key] || []; if (t === 'None of the above') arr = arr.includes(t) ? [] : [t]; else { arr = arr.filter(x => x !== 'None of the above'); const k = arr.indexOf(t); k >= 0 ? arr.splice(k, 1) : arr.push(t); } LC.ans[it.key] = arr; }
+    else { LC.ans[it.key] = t; if (it.key === 'place') LC.skip = !!it.options[+el.dataset.i].end; }
+    lcRender(); },
+  'lc-next': el => { if (el.disabled) return; const last = LC.skip || LC.step >= LC_Q.length - 1;
+    if (last) { S.locDone = today(); save(); $$('.lc-bdg').forEach(b => b.remove()); popLayer(layerOf(el)); toast('Location reflection complete'); return; }
+    LC.step++; lcRender(); const l = $('.lc-layer'); if (l) l.scrollTop = 0; },
+  'lc-exit': el => popLayer(layerOf(el)),
+  'lc-back': el => { if (LC.step > 0) { LC.step--; if (LC.step === 0) LC.skip = false; lcRender(); } else popLayer(layerOf(el)); }
+});
+
+/* ── Log out: ask "Are you sure?" in a bottom sheet before signing out ── */
+Object.assign(ACT, {
+  'me-logout': () => {
+    if ($('.lo-sheet')) return;
+    const l = pushLayer(`<div class="sheet trig lo-sheet"><span class="grab"></span>
+      <h2>Log out of Rudra?</h2>
+      <p class="trig-p">Are you sure you want to log out?</p>
+      <div class="lo-btns"><button class="btn ghost lo-cancel" data-act="close-layer">Cancel</button><button class="btn lo-yes" data-act="lo-yes">Yes, log out</button></div></div>`, 'sheet-wrap');
+    l.addEventListener('click', e => { if (e.target === l) popLayer(l); });
+  },
+  'lo-yes': () => { try { localStorage.removeItem(KEY); } catch (e) { } S = DEFAULT(); $$('.layer').forEach(popLayer); renderOnb(); }
+});
