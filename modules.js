@@ -705,10 +705,8 @@ const LC_Q = [
     'Work', 'Take classes', 'Religious or spiritual activities', 'Volunteer or community service', 'Exercise or play sports', 'Visit family or friend(s) at their home', 'Socialize', 'Relax', 'Eat a meal',
     'Drink a non-alcoholic beverage (e.g., coffee, tea, smoothie)', 'Drink alcohol', 'Shop for food, products (e.g., clothes, cars, appliances) or services (e.g., haircut)', 'Buy alcohol (for later use; e.g., liquor store)',
     'Get treatment to manage my recovery (e.g. counseling, talk therapy, medications)', 'Attend an NA/AA or other peer-led group to manage my recovery', 'Get general (beyond recovery) mental health care', 'Get physical health care', 'None of the above'] },
-  { key: 'pleasant', type: 'single', icons: ['smile', 'smile', 'meh', 'frown', 'frown'], q: 'Visits to this location are', options: [
-    { t: 'Always/Almost Always Pleasant' }, { t: 'Sometimes Pleasant' }, { t: 'Neither Pleasant or Unpleasant' }, { t: 'Sometimes Unpleasant' }, { t: 'Always/Almost Always Unpleasant' }] },
-  { key: 'support', type: 'single', icons: ['shield', 'heart', 'minusc', 'alert', 'alert'], q: 'Visits to this location provide', options: [
-    { t: 'Strong support to my recovery' }, { t: 'Some support to my recovery' }, { t: 'Do not affect my recovery' }, { t: 'Some risk to my recovery' }, { t: 'Strong risk to my recovery' }] }
+  { key: 'pleasant', type: 'slider', q: 'Visits to this location are', labels: ['Usually unpleasant', 'Sometimes unpleasant', 'Neutral', 'Sometimes pleasant', 'Usually pleasant'] },
+  { key: 'support', type: 'slider', q: 'Visits to this location provide', labels: ['Strong risk', 'Some risk', 'Neutral', 'Some support', 'Strong support'] }
 ];
 const LC = { step: 0, ans: {}, skip: false };
 const lcT = o => typeof o === 'string' ? o : o.t;
@@ -724,12 +722,12 @@ function lcMap() {
 }
 function lcRender() {
   const it = LC_Q[LC.step], total = LC.skip ? 1 : LC_Q.length, sel = LC.ans[it.key], last = LC.skip || LC.step >= LC_Q.length - 1;
-  const ok = it.type === 'multi' ? Array.isArray(sel) && sel.length > 0 : !!sel;
+  const ok = it.type === 'multi' ? Array.isArray(sel) && sel.length > 0 : !!sel, Lv = it.type === 'slider' ? (sel ? it.labels.indexOf(sel) + 1 : 3) : 0;
   $('#lc-sheet').innerHTML = `<div class="lc-top">${LC.step > 0 ? `<button class="lc-bk" type="button" data-act="lc-back" aria-label="Previous question">${ic('back', 20, 2.4)}</button>` : ''}<div class="lc-bar"><i style="width:${Math.round((LC.step + 1) / total * 100)}%"></i></div><span class="lc-cnt"><b>${LC.step + 1}</b>/${total}</span></div>
     <div class="lc-content">${LC.step === 0 ? `<div class="lc-intro"><p>Rudra noticed you recently spent time here. A few quick questions about places you’ve visited more than once in the past 30 days.</p></div>` : ''}
     <h2 class="lc-q">${it.q}</h2>${it.hint ? `<p class="lc-hint">${it.hint}</p>` : ''}
-    <div class="lc-opts">${it.options.map((o, i) => { const t = lcT(o), on = it.type === 'multi' ? Array.isArray(sel) && sel.includes(t) : sel === t;
-      return `<button class="lc-opt${on ? ' on' : ''}" type="button" data-act="lc-pick" data-i="${i}"><span class="lc-oi">${ic((it.icons && it.icons[i]) || 'pin', 20, 1.8)}</span><span class="lc-ot">${esc(t)}</span><span class="lc-ck ${it.type === 'multi' ? 'sq' : ''}">${on ? ic('check', 14, 3.2) : ''}</span></button>`; }).join('')}</div></div>
+    ${it.type === 'slider' ? `<div class="scard lc-scard"><div class="s-val" id="lc-sv">${it.labels[Lv - 1]}</div><div class="s-row"><input class="s-range lc-range" type="range" min="1" max="5" step="1" value="${Lv}" style="--p:${(Lv - 1) * 25}%" aria-label="${esc(it.q)}"></div><div class="s-lab"><span>${it.labels[0]}</span><span>${it.labels[4]}</span></div></div>` : `<div class="lc-opts">${it.options.map((o, i) => { const t = lcT(o), on = it.type === 'multi' ? Array.isArray(sel) && sel.includes(t) : sel === t;
+      return `<button class="lc-opt${on ? ' on' : ''}" type="button" data-act="lc-pick" data-i="${i}"><span class="lc-oi">${ic((it.icons && it.icons[i]) || 'pin', 20, 1.8)}</span><span class="lc-ot">${esc(t)}</span><span class="lc-ck ${it.type === 'multi' ? 'sq' : ''}">${on ? ic('check', 14, 3.2) : ''}</span></button>`; }).join('')}</div>`}</div>
     <div class="lc-foot"><button class="btn lc-next" type="button" data-act="lc-next"${ok ? '' : ' disabled'}>${last ? 'Submit' : 'Next'}</button></div>`;
 }
 Object.assign(ACT, {
@@ -756,4 +754,22 @@ Object.assign(ACT, {
     l.addEventListener('click', e => { if (e.target === l) popLayer(l); });
   },
   'lo-yes': () => { try { localStorage.removeItem(KEY); } catch (e) { } S = DEFAULT(); $$('.layer').forEach(popLayer); renderOnb(); }
+});
+
+/* location sliders */
+function lcSlide(el) {
+  const it = LC_Q[LC.step]; if (!it || it.type !== 'slider') return;
+  const L = +el.value; LC.ans[it.key] = it.labels[L - 1]; el.style.setProperty('--p', (L - 1) * 25 + '%');
+  const v = $('#lc-sv'); if (v) v.textContent = it.labels[L - 1]; const n = $('.lc-next'); if (n) n.disabled = false;
+}
+document.addEventListener('input', e => { if (e.target.classList && e.target.classList.contains('lc-range')) lcSlide(e.target); });
+document.addEventListener('pointerup', e => { if (e.target.classList && e.target.classList.contains('lc-range')) lcSlide(e.target); });
+
+/* past activities */
+Object.assign(ACT, {
+  'past-acts': () => {
+    const rows = S.txns.filter(x => /^Activity/.test(x.t));
+    pushLayer(`<div class="layer-top"><button class="icon-btn" data-act="close-layer" aria-label="Back">${ic('back', 20)}</button></div><div class="pad"><div class="wal-top" style="padding:0 0 14px"><h1>Past activities</h1></div>
+      ${rows.length ? `<div class="pg-list">${rows.map(x => `<div class="pg-row"><span class="pg-ic">${ic('check', 18, 2.2)}</span><div><b>${esc(x.t.replace(/^Activity:\s*/, '') || 'Activity')}</b><small>${x.d === today() ? 'Today' : x.d === daysAgo(1) ? 'Yesterday' : fmtD(x.d)}</small></div></div>`).join('')}</div>` : `<div class="empty-card"><h3>No activities yet</h3><p>Finish an activity and it will show up here.</p></div>`}</div>`, 'sheet-wrap');
+  }
 });

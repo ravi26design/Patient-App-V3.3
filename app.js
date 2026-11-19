@@ -206,12 +206,12 @@ const greeting = () => { const h = new Date().getHours(); return h < 5 ? 'Good n
 
 /* ═════════ ONBOARDING — "How to Play" style cards ═════════ */
 const ONB = [
-  { i: 'pulse', t: 'Reflection, In about 2 min', p: 'Earn money every time you complete a response, no matter what you answer.' },
+  { i: 'pulse', t: 'Reflection,<br>in about 2 minutes', p: 'Earn money every time you complete a response, there are no wrong answers.' },
   { i: 'target', t: 'Your score, made simple', p: 'See your Recovery Health score and how it’s trending. Tap Listen or Read for what it means.' },
-  { i: 'sparkle', t: 'Insights made for you', p: 'I learn your usual and point out what’s changing.' },
+  { i: 'sparkle', t: 'Insights, delivered to you', p: 'I get to know you well over time and provide insights and recommendations personalized to you each day.' },
   { i: 'bolt', t: 'Help the moment a craving hits', p: 'Tap the red Help button anytime. Get tools matched to what you’re feeling.' },
-  { i: 'chat', t: 'You’re not alone', p: 'A moderated Community Room, meetings, 1:1 support and sober events, all in one place.' },
-  { i: 'leaf', t: 'Care for your whole life', p: 'Faith, health, relationships and work.' },
+  { i: 'chat', t: 'You’re not alone', p: 'A moderated community room, self-help group meetings, and 1:1 support, all in one place.' },
+  { i: 'leaf', t: 'Support for your life', p: 'Faith, health, relationships and work.' },
   { i: 'coin', t: 'Earn real rewards', p: 'Money earned for daily app use and weekly bonus. Missing a day never resets anything.' }
 ];
 const ONB_IMG = [1, 2, 3, 4, 5, 6, 7].map(n => `intro-${n}.jpg?v=2`);
@@ -222,7 +222,7 @@ function renderIntro() {
     <video class="intro-vid" src="assets/intro.mp4?v=2" poster="assets/intro-poster.jpg?v=2" autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
     <div class="intro-shade" aria-hidden="true"></div>
     <div class="intro-top"><span class="intro-word">Insights</span><button class="intro-skip" data-act="onb-skip">Skip</button></div>
-    <div class="intro-copy"><span class="intro-ic">${ic('heart', 24, 1.9)}</span><h1>Your recovery, one day at a time</h1>
+    <div class="intro-copy"><span class="intro-ic">${ic('heart', 24, 1.9)}</span><h1>Your recovery, personalized for you</h1>
       <p>I’m Rudra, your recovery companion. Here for the easy days and the hard ones.</p></div>
     <div class="intro-foot"><button class="btn intro-btn" data-act="intro-start">Get started ${ic('next', 16, 2.4)}</button></div></div>`;
   const v = $('.intro-vid');
@@ -375,9 +375,9 @@ function renderHome() {
   <div class="oh-top"><div class="oh-lead"><button class="oh-chip" data-act="tab" data-v="me" aria-label="Profile">${ic('user', 22, 1.6)}</button><img class="oh-logo" src="assets/logo.webp" alt="RudraHealth.ai"></div>
     <div class="oh-actions"><button class="oh-chip" data-act="open-map" aria-label="Location reflection">${ic('pin', 22, 1.6)}${S.locDone === today() ? '' : '<span class="lc-bdg">2</span>'}</button></div></div>
   <h1 class="oh-hey"><span>Hey,</span> ${esc(S.name || 'friend')}</h1><p class="oh-sub">Take a breath - one small step today.</p>
-  <div class="oh-prog"><div class="seg"><i class="${done ? 'on' : ''}"></i><i class="${S.focusDone === today() ? 'on' : ''}"></i></div><div class="lbl"><span class="${done ? 'ok' : ''}">Reflection</span><span class="${S.focusDone === today() ? 'ok' : ''}">Activity</span></div></div>
   ${homeScoreCard(last)}
   ${homeNextCard(last)}
+  ${last ? `<button class="oh-pastlink" data-act="past-acts">View past activities ${ic('next', 16, 2.2)}</button>` : ''}
 `;
   setTimeout(() => { const n = $('#rh-needle'); if (n) n.style.transform = `rotate(${-90 + 180 * clamp(((last && checkedInToday()) ? last.overall : 0) / 100, 0, 1)}deg)`; }, 120);
 }

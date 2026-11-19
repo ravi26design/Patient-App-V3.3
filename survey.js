@@ -58,7 +58,7 @@ function rqArt(k) {
 const sl = (k, q, lo, hi, icon, tone, eLo, eHi, inv) => ({ k, q, lo, hi, icon, tone, eLo, eHi, inv });
 /* related questions clubbed onto one screen */
 /* one question per page: each slider becomes its own screen, keeping the group's context line */
-const grp = (id, ctx, title, sub, ...items) => items.map(it => ({ id: it.k, type: 'sliders', ctx: title.replace(/(past 24 hours|next week|this emotion is right now|right now)/, '<strong>$1</strong>'), title: it.q, sub: '', items: [it] }));
+const grp = (id, ctx, title, sub, ...items) => items.map(it => ({ id: it.k, type: 'sliders', ctx: title.replace(/(past 24 hours|next week|right now)/, '<strong>$1</strong>'), title: it.q, sub: '', items: [it] }));
 const SCREENS = [
   { id: 'meds', type: 'choice' },
   grp('past-24', 'Past 24 hours', 'Thinking about the past 24 hours…', null,
@@ -75,15 +75,15 @@ const SCREENS = [
     sl('relaxed', 'Relaxed?', 'Not at all', 'Extremely', 'leaf', 'green', '😐', '😌', false),
     sl('happy', 'Happy?', 'Not at all', 'Extremely', 'smile', 'amber', '😐', '😄', false)),
   grp('outlook', 'Next week', 'Thinking about the next week…', null,
-    sl('motivation', 'Motivation to avoid non-medical opioid use?', 'Not motivated', 'Extremely motivated', 'rocket', 'green', '😐', '🔥', false),
+    sl('motivation', 'Motivation to reduce or avoid non-prescribed opioid use?', 'Not motivated', 'Extremely motivated', 'rocket', 'green', '😐', '🔥', false),
     sl('confidence', 'Confidence you can?', 'Not confident', 'Extremely confident', 'shield', 'blue', '😟', '😎', false)),
-  { id: 'unreported', type: 'yesno', title: 'Have you used opioids that you didn’t report?' },
-  { id: 'substances', type: 'multi', title: 'Which of these drugs have you used in the past 24 hours?' }
+  { id: 'unreported', type: 'yesno', title: 'Have you used non-prescribed opioids that you didn’t report?' },
+  { id: 'substances', type: 'multi', title: 'Which of these other drugs have you used in the past 24 hours?' }
 ].flat();
 const MED_OPTS = [['Yes, my full dose', 'checkc'], ['Only part of my dose', 'partial'], ['No, I didn’t take it', 'xc'], ['Medication no longer prescribed', 'info']];
 const SUBS = [['Alcohol', 'beer'], ['Cannabis (marijuana, pot, hash, K2, spice, etc.)', 'leaf'], ['Stimulants (cocaine, meth, speed, ecstasy, molly, Adderall, etc.)', 'bolt'],
   ['Inhalants (nitrous, glue, petrol, paint thinner, etc.)', 'wind'], ['Sedatives or sleeping pills (Valium, Serepax, Rohypnol, etc.)', 'pill'],
-  ['Hallucinogens (LSD, acid, mushrooms, PCP, special K, etc.)', 'sparkle'], ['7-OH, Kratom, etc.', 'drop'], ['Other', 'more'], ['None - I did not use any substances', 'checkc']];
+  ['Hallucinogens (LSD, acid, mushrooms, PCP, special K, etc.)', 'sparkle'], ['Other', 'more'], ['None - I did not use any substances', 'checkc']];
 const NONE = 'None - I did not use any substances';
 
 /* ═════════ scoring ═════════ */
@@ -232,7 +232,7 @@ function prepScreenB(root) {
   const layers = [[40, 90, 140, 190], [25, 65, 105, 145, 185], [65, 115, 165], [90, 140]], xs = [26, 96, 164, 234];
   const lines = []; layers.forEach((a, li) => { if (li < layers.length - 1) a.forEach((y1, i) => layers[li + 1].forEach((y2, j) => lines.push(`<line x1="${xs[li]}" y1="${y1}" x2="${xs[li + 1]}" y2="${y2}" style="--d:${((i * 3 + j * 5 + li * 2) % 9) * .3}s"/>`))); });
   const nodes = layers.map((a, li) => a.map((y, i) => `<circle cx="${xs[li]}" cy="${y}" r="${li === 0 || li === layers.length - 1 ? 7 : 5.5}" style="--d:${(li * 1.1 + i * .35).toFixed(2)}s"/>`).join('')).join('');
-  root.innerHTML = `<div class="prepb"><h1>Analysing your reflection</h1><p class="pb-sub" id="pb-stage">Reading your 7 signals</p><span class="pb-tag"><i></i>Rudra Insights is analysing</span>
+  root.innerHTML = `<div class="prepb"><h1>Analyzing your reflection</h1><p class="pb-sub" id="pb-stage">Reading your 7 signals</p><span class="pb-tag"><i></i>Rudra Insights is analyzing</span>
     <div class="pb-net"><svg viewBox="0 0 260 230" aria-hidden="true"><g class="pb-lines">${lines.join('')}</g><g class="pb-nodes">${nodes}</g><rect class="pb-scan" x="0" y="0" width="38" height="230"/></svg></div>
     <div class="pb-chips">${sig.map((t, i) => `<span style="--i:${i}">${t}</span>`).join('')}</div>
     </div>`;

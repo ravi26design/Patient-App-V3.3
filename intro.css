@@ -55,3 +55,4 @@ html[data-theme="dark"] .phone.on-intro>*{filter:none}
 #v-onb .onb2,#v-onb .intro{touch-action:pan-y;user-select:none;-webkit-user-select:none}
 #v-onb .onb2 .onb-img img{-webkit-user-drag:none;pointer-events:none}
 .intro-word,#v-onb .onb2 .onb-top .intro-word{font-size:24px!important}
+#v-onb .onb2 .onb-copy h2,.intro-copy h1{font-size:28px!important;line-height:1.15!important}

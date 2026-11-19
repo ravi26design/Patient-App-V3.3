@@ -137,3 +137,53 @@ h1,h2,.step-h,.q-text,.oh-hey,.rd-h1,.fx-title,.rr-h1,.tools-head,.wal-top,.rd-c
 
 /* selected answer boxes: thinner outline */
 .choice.sel,.sub.sel{box-shadow:none!important;border:1.5px solid #6C9FCC!important}
+/* typography, matched to the reference prototype: Fraunces for display headings, Manrope for UI, Inter for body */
+:root{--f-disp:'Fraunces',Georgia,serif;--f-ui:'Manrope','Inter',-apple-system,sans-serif;--f-body:'Inter',-apple-system,'Helvetica Neue',sans-serif}
+body{font-family:var(--f-body)}
+.oh-hey,.oh-hey span,.rd-h1,.rd-h1 .g,.rr-h1,.fx-title,.q-text,.rd-cardh,.step-h,.onb2 h2,.intro h2,.zcm-lh,.cv-h,.rw-coach{font-family:var(--f-disp)!important;font-weight:400!important;letter-spacing:-.02em!important}
+.tools-head h1,.wal-top h1,.layer-top h1,.me-card h1,.tool-hero h1{font-family:var(--f-ui)!important;font-weight:800!important;letter-spacing:-.03em!important}
+.rr-num b,.rw-amt,.big-amt,.pg-stats b,.rr-earn strong,.fx-tile b,.rw-t b{font-family:var(--f-ui)!important;font-weight:800!important;letter-spacing:-.04em!important}
+.btn,.set-row b,.rd-chip,.zcm-help,.oh-prog .lbl span{font-family:var(--f-ui)!important}
+/* one type system: section & screen titles in Manrope (display greetings stay Fraunces), body in Inter */
+h2,h3,.zp1-h,.zrc-lbl,.zp1-hero h2,.zev-hero b,.zv-empty.sv b,.zcm-lay h1.zcm-lh,.zrd h1,.zc-title,.zrd h2,.rr-next h2,.lc-q,.fx-st,.tool-hero h1{font-family:var(--f-ui)!important}
+.zcm-lay h1.zcm-lh,.zrd h1,.zc-title{font-weight:800!important;letter-spacing:-.03em!important}
+.zp1-h,.zrc-lbl,.zp1-hero h2,.zev-hero b,.rr-next h2,.lc-q{font-weight:700!important;letter-spacing:-.02em!important}
+p,small,li,label,input,textarea,.zp1-tags span{font-family:var(--f-body)}
+/* consistent main-screen titles: smaller, a little lower */
+.tools-head h1,.wal-top h1,.me-head h1{font-size:28px!important;line-height:1.15!important;font-family:var(--f-ui)!important;font-weight:800!important;letter-spacing:-.03em!important}
+.tools-head{padding-top:calc(var(--sat,0px) + 44px)!important}
+.wal-top{padding-top:calc(var(--sat,0px) + 44px)!important}
+/* community: roomier, content stretches down to the nav */
+#v-community:not([hidden]){display:flex;flex-direction:column}
+#v-community #zcm-body{flex:1;display:flex;flex-direction:column;gap:20px;min-height:0}
+#v-community .zrm-3{margin-bottom:0!important;gap:14px!important}
+#v-community .zrm-t3{padding-top:20px!important;padding-bottom:18px!important}
+#v-community .zrm-room2.big{flex:1;display:flex;flex-direction:column;justify-content:space-between;gap:18px;margin:0!important;padding:22px 20px!important}
+#v-community .zrm-feedcard{margin:0!important;padding:20px!important}
+/* rewards: weekly note as plain text, no pill */
+.rw-vchip{background:none!important;border:0!important;box-shadow:none!important;padding:0!important;border-radius:0!important;font-size:14px!important;color:rgba(255,255,255,.85)!important}
+/* community: bigger "What's on your mind" box, plus icon removed */
+.zrm-compose2 em{display:none!important}
+#v-community .zrm-room2 .zrm-compose2{min-height:120px;padding:22px 20px!important;align-items:flex-start!important}
+#v-community .zrm-room2 .zrm-compose2 b{font-size:19px!important}
+#v-community .zrm-room2 .zrm-compose2 small{font-size:15px!important;margin-top:8px!important}
+.fx-wrap{padding-top:calc(var(--sat,0px) + 84px)!important}
+/* survey questions: top text lower, more space between sections */
+.q-wrap{padding-top:22px}
+.q-wrap .q-text{margin:14px 0 26px!important}
+.q-wrap .yn{margin-top:6px!important;margin-bottom:22px!important;gap:14px!important}
+.q-wrap .cal-note{margin:4px 0 22px!important;line-height:1.5}
+.q-wrap .cal,.q-wrap .cal-card{margin-top:0}
+/* slider cards: more room between the graphic and the value text */
+.scards .scard .rq-mid{margin-bottom:18px!important}
+.scard .s-val{margin:30px 0 26px!important}
+.lc-scard .s-val{margin:22px 0 26px!important}
+/* reflection welcome: space between "Tap to begin" and the text */
+.rd-welcome .rd-cardh{margin-top:30px!important}
+.rd-welcome .rd-ci-art{margin-bottom:6px}
+/* slider value text: slightly smaller, lower */
+.scard .s-val{font-size:28px!important;margin:36px 0 20px!important}
+.lc-scard .s-val{font-size:24px!important;margin:30px 0 22px!important}
+/* Continue / Next buttons always sit at the bottom of the screen */
+.setup .step-foot,.ob-page .step-foot{margin-top:auto!important;padding-top:24px!important}
+.ob-page{min-height:100%}

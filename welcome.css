@@ -815,3 +815,10 @@ html.gated .fx-x{display:none!important}
 .rw-week .rw-dots{margin-top:20px!important}
 .rw-week p{margin:20px 0 0!important;padding-top:16px;border-top:1px solid #EDF1F5;font-size:12.5px!important;line-height:1.55!important}
 .rd-welcome .rd-h1.rr-h1{font-size:28px!important;line-height:1.15}
+/* home: past activities link */
+.oh-pastlink{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin:6px 0 24px;padding:12px;background:none;border:0;color:#3F7FC0;font:600 15px var(--f-ui,'Manrope',sans-serif);cursor:pointer}
+/* location survey sliders */
+.lc-scard{background:transparent!important;box-shadow:none!important;padding:8px 0 0!important;text-align:center}
+.lc-scard .s-val{font-size:26px!important;margin:18px 0 22px!important;min-height:34px}
+.lc-scard .s-row{display:block!important}
+.lc-scard .s-row .s-range{width:100%!important}

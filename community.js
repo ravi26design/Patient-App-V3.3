@@ -416,6 +416,9 @@ PODS.forEach(p => p.tp = _relTag(p.tp)); BOOKS.forEach(b => b.tp = _relTag(b.tp)
         <div class="zp1-tags"><span>${ic('check', 12, 3)}Lived experience</span><span>${ic('check', 12, 3)}Often free</span><span>${ic('check', 12, 3)}Trained</span></div>
         <a class="zp1-cta" href="${ARCO_URL}" target="_blank" rel="noopener">${ic('pin', 18, 2)}Find support near me${ic('ext', 15, 2.2)}</a></section>
 
+      <h3 class="zp1-h">Talk to someone today</h3>
+      <div class="zp1-talk">${TALK.map(([u, i, n, d, cta], k) => `<a class="zt-${k}" href="${u}"><span class="zri">${ic(i, 18, 2)}</span><b>${n}</b><small>${d}</small><em>${cta}</em></a>`).join('')}</div>
+
       <h3 class="zp1-h">How it works</h3>
       <ol class="zp1-steps"><li><b>1</b><span>Find one near you</span></li><li><b>2</b><span>Ask for a first chat</span></li><li><b>3</b><span>Meet regularly</span></li></ol>
 
@@ -425,12 +428,7 @@ PODS.forEach(p => p.tp = _relTag(p.tp)); BOOKS.forEach(b => b.tp = _relTag(b.tp)
       <h3 class="zp1-h">Where to find one</h3>
       <div class="zp1-find">${FIND.map(([u, i, c, n, d]) => `<a class="zg-${c}" href="${u}" target="_blank" rel="noopener"><span class="zri">${ic(i, 22, 1.9)}</span><b>${n}</b><small>${d}</small><i>${ic('ext', 13, 2.4)}</i></a>`).join('')}</div>
 
-      <div class="zp1-ask"><span class="zri">${ic('chat', 18, 2)}</span><div><small>Ask your clinic or insurance</small><q>Do you have a peer recovery specialist I can meet with?</q></div>
-        <button data-act="zps-copy" aria-label="Copy this question"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/></svg>Copy question</button></div>
       <a class="zp1-verify" href="https://internationalcredentialing.org/" target="_blank" rel="noopener">${ic('shield', 16, 2)}Check someone’s peer certification${ic('ext', 13, 2.4)}</a>
-
-      <h3 class="zp1-h">Talk to someone today</h3>
-      <div class="zp1-talk">${TALK.map(([u, i, n, d, cta], k) => `<a class="zt-${k}" href="${u}"><span class="zri">${ic(i, 18, 2)}</span><b>${n}</b><small>${d}</small><em>${cta}</em></a>`).join('')}</div>
 
       <div class="zp1-sos"><b>${ic('life', 18, 2)}In crisis?</b><small>Free, private and open 24/7. You do not have to wait.</small><a class="zs-main" href="tel:988">Call 988</a><a href="sms:988">Text 988</a><a href="tel:911">911</a></div>
       <p class="zev-note">${ic('info', 13, 2)}Peer specialists aren’t therapists or doctors. Ask your care team about medication.</p>`;

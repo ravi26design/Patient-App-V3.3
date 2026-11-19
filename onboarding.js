@@ -49,7 +49,7 @@ function renderProfile() {
     ${pStep === 1 ? contactFld(p) : ''}
     </div>
     <div class="pst" ${pStep === 2 ? '' : 'hidden'}>
-    ${pStep === 2 ? `<div class="fld"><label class="lbl" for="nm">First name</label><div class="inp-i">${ic('user', 20)}<input class="inp" id="nm" maxlength="24" placeholder="First name" value="${esc(S.name)}" autocomplete="given-name" autocapitalize="words"></div></div>
+    ${pStep === 2 ? `<div class="fld"><label class="lbl" for="nm">First Name (Preferred)</label><div class="inp-i">${ic('user', 20)}<input class="inp" id="nm" maxlength="24" placeholder="First Name (Preferred)" value="${esc(S.name)}" autocomplete="given-name" autocapitalize="words"></div></div>
     <div class="fld"><label class="lbl" for="ln">Last name</label><div class="inp-i">${ic('user', 20)}<input class="inp" id="ln" maxlength="24" placeholder="Last name" value="${esc(S.last || '')}" autocomplete="family-name" autocapitalize="words"></div></div>
     ${via === 'phone' ? emailFld(p, 'Email') : phoneFld(p, 'Mobile number')}
     <div class="fld"><label class="lbl" for="dob">Date of birth</label><div class="inp-i">${ic('calendar', 20)}<input class="inp" id="dob" type="text" readonly inputmode="none" placeholder="mm/dd/yy" data-act="dob-open" data-iso="${esc(p.dob)}" value="${esc(dobFmt(p.dob))}">${ic('down', 16)}</div></div>
