@@ -822,3 +822,24 @@ html.gated .fx-x{display:none!important}
 .lc-scard .s-val{font-size:26px!important;margin:18px 0 22px!important;min-height:34px}
 .lc-scard .s-row{display:block!important}
 .lc-scard .s-row .s-range{width:100%!important}
+/* past activities: full screen */
+.pa-layer{background:var(--bg,#F6F5F2)!important;padding-bottom:calc(40px + var(--sab,0px))}
+.pa-layer .layer-top{padding:calc(var(--sat,0px) + 50px) 20px 6px}
+.pa-layer .pad{padding:8px 20px 0}
+.pa-layer .wal-top{padding:8px 0 18px!important}
+.pa-layer .wal-top h1{font-size:28px!important}
+.pa-layer .pg-list{padding:6px 18px}
+.pa-layer .pg-row{padding:16px 0}
+/* past activities: full screen */
+.pa-layer{background:var(--bg,#F6F5F2)!important;padding-bottom:calc(40px + var(--sab,0px))}
+.pa-layer .layer-top{padding:calc(var(--sat,0px) + 50px) 20px 6px}
+.pa-layer .pad{padding:8px 20px 0}
+.pa-layer .wal-top{padding:8px 0 18px!important}
+.pa-layer .wal-top h1{font-size:28px!important}
+.pa-layer .pg-list{padding:6px 18px}
+.pa-layer .pg-row{padding:16px 0}
+.pa-layer .layer-top{padding-top:calc(var(--sat,0px) + 24px)!important}
+/* past activities: each row is its own card */
+.pa-layer .pg-list{background:none!important;box-shadow:none!important;border:0!important;padding:0!important;display:flex;flex-direction:column;gap:12px}
+.pa-layer .pg-row{background:#fff;border:1px solid #E6ECF2;border-radius:22px;padding:16px 18px!important;border-bottom:1px solid #E6ECF2!important}
+.pa-layer .pg-row:last-child{border-bottom:1px solid #E6ECF2!important}

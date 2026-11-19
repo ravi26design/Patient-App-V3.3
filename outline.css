@@ -187,3 +187,107 @@ p,small,li,label,input,textarea,.zp1-tags span{font-family:var(--f-body)}
 /* Continue / Next buttons always sit at the bottom of the screen */
 .setup .step-foot,.ob-page .step-foot{margin-top:auto!important;padding-top:24px!important}
 .ob-page{min-height:100%}
+.scard .s-val{font-size:24px!important}
+.lc-scard .s-val{font-size:22px!important}
+/* consistent sizes: screen/question titles 26px, slider values 24px, same sans family */
+.q-text,.rr-h1,.fx-title,.rd-cardh,.step-h,.zcm-lh,.rd-welcome .rd-h1.rr-h1{font-family:var(--f-ui)!important;font-weight:700!important;font-size:26px!important;line-height:1.2!important;letter-spacing:-.02em!important}
+.scard .s-val,.lc-scard .s-val{font-family:var(--f-ui)!important;font-weight:600!important;font-size:24px!important;letter-spacing:-.02em!important}
+.rd-welcome .rd-cardh{font-size:20px!important;line-height:1.35!important;font-weight:600!important}
+/* two fonts only: Manrope (headings, numbers, buttons) and Inter (everything else) */
+:root{--f-disp:'Manrope','Inter',-apple-system,sans-serif;--serif:var(--f-body);--ui:var(--f-body);--font:var(--f-body)}
+.oh-hey,.oh-hey span,.rd-h1,.rd-h1 .g,.rw-coach,.cv-h,.intro-word,.onb2 h2,.intro h2,.intro-copy h1{font-family:var(--f-ui)!important;font-weight:700!important;letter-spacing:-.02em!important}
+/* Manrope = titles only; Inter = body, buttons, chips, labels */
+.btn,button,.set-row b,.rd-chip,.zcm-help,.oh-prog .lbl span,.rd-tap,.oh-pastlink,.rw-t small,.rw-t span,.q-ctx,.s-lab,.s-last,.pg-row b,.eyebrow,.zp1-tags span,.zrm-av{font-family:var(--f-body)!important}
+.rd-welcome .rd-h1:not(.rr-h1),.rd-welcome .rd-h1:not(.rr-h1) .g{font-family:'Inter',-apple-system,'Segoe UI',sans-serif!important;font-weight:600!important;letter-spacing:-.04em!important}
+/* two fonts: Fraunces (all titles, as in the Welcome heading) + Inter (body, buttons, labels) */
+:root{--f-ui:'Fraunces',Georgia,serif;--f-disp:'Fraunces',Georgia,serif}
+h1,h2,h3,.oh-hey,.oh-hey span,.rd-h1,.rd-h1 .g,.rr-h1,.fx-title,.q-text,.rd-cardh,.step-h,.zcm-lh,.tools-head h1,.wal-top h1,.me-head h1,.layer-top h1,.me-card h1,.tool-hero h1,.zp1-h,.zrc-lbl,.zp1-hero h2,.zev-hero b,.zrd h1,.zc-title,.rr-next h2,.lc-q,.intro-word,.onb2 h2,.intro-copy h1,.rw-coach,.zcm-lay h1.zcm-lh,.rd-welcome .rd-h1:not(.rr-h1),.rd-welcome .rd-h1:not(.rr-h1) .g,.rr-num b,.rw-amt,.big-amt,.pg-stats b,.fx-tile b,.rw-t b,.rr-earn strong{font-family:'Fraunces',Georgia,serif!important;font-weight:500!important;letter-spacing:-.01em!important}
+.rd-welcome .rd-h1:not(.rr-h1){font-size:32px!important;font-weight:400!important;line-height:1.1!important}
+.oh-hey{font-weight:400!important}
+.rr-num b,.rw-amt,.big-amt,.fx-tile b,.rw-t b{font-weight:500!important}
+.fx-wrap{padding-top:calc(var(--sat,0px) + 64px)!important}
+.fx-wrap{padding-top:calc(var(--sat,0px) + 52px)!important}
+.fx-wrap{padding-top:calc(var(--sat,0px) + 40px)!important}
+/* community room card: nothing may shrink or overflow */
+#v-community #zcm-body{flex:1 0 auto!important;min-height:auto!important}
+#v-community .zrm-room2.big{flex:1 0 auto!important;min-height:0}
+#v-community .zrm-room2.big>*{flex-shrink:0!important}
+#v-community .zrm-room2 .zrm-compose2{height:auto!important;min-height:112px!important;overflow:visible!important;padding:20px 20px!important;align-items:center!important}
+#v-community .zrm-room2 .zrm-compose2 span:not(.zrm-av){display:block!important;overflow:visible!important}
+#v-community .zrm-room2 .zrm-compose2 b{display:block;margin:0 0 6px!important;line-height:1.25!important}
+#v-community .zrm-room2 .zrm-compose2 small{display:block;margin:0!important;line-height:1.45!important}
+#v-community .zrm-quick{flex-shrink:0}
+.zrm-t3 .zri{width:56px!important;height:56px!important;min-width:56px;border-radius:50%!important;display:grid!important;place-items:center;padding:0!important;flex:none}
+/* community feed card: roomier, avatars readable */
+.zrm-feedcard{padding:22px 20px!important;gap:16px!important;align-items:center!important}
+.zrm-fc-tx{display:flex!important;flex-direction:column;gap:6px;min-width:0}
+.zrm-fc-tx b{margin:0!important;line-height:1.2!important}
+.zrm-fc-tx small{margin:0!important;line-height:1.45!important}
+.zrm-fc-meta{margin-top:10px!important;display:flex!important;align-items:center;gap:12px}
+.zrm-fc-av{display:flex!important;align-items:center}
+.zrm-fc-av>*{margin-left:-6px!important;border:2px solid #fff!important;box-sizing:content-box}
+.zrm-fc-av>*:first-child{margin-left:0!important}
+/* community tiles: more top/bottom room */
+.zrm-t3{padding:28px 12px 26px!important;gap:16px!important;min-height:0}
+.zrm-t3 .zri{width:52px!important;height:52px!important;min-width:52px}
+.zrm-3.q4 .zrm-t3,.zrm-t3{height:auto!important;min-height:140px!important;padding:30px 12px 28px!important}
+.zrm-3.q4 .zrm-t3,.zrm-t3{min-height:122px!important;padding:24px 12px 22px!important}
+/* location sliders: same card layout as the reflection sliders */
+.lc-scard .rq-mid{margin-bottom:18px!important}
+.lc-scard .s-val{font-size:24px!important;margin:36px 0 20px!important}
+.lc-sheet,.lc-foot{background:var(--bg,#F7F5F1)!important}
+.lc-opt{background:#fff!important}
+.lc-scard{background:transparent!important}
+/* location slider: white card like the reflection sliders */
+.lc-scard{background:#fff!important;border-radius:32px!important;padding:22px 18px 24px!important;margin-top:6px}
+/* location options: same style as the Daily Reflection answer cards */
+.lc-opts{gap:12px!important}
+.lc-opt{padding:20px 18px!important;border-radius:24px!important;border:1px solid var(--card-line,#E6ECF2)!important;background:#fff!important;gap:14px!important;font-weight:500!important;color:#1F2A37}
+.lc-opt .lc-oi{background:none!important;width:auto;height:auto;border-radius:0;color:#111!important}
+.lc-opt .lc-ck{display:none!important}
+.lc-opt.on{background:#fff!important;border:1.5px solid #6C9FCC!important}
+.lc-opt.on .lc-oi{background:none!important;color:#4F82B0!important}
+/* one option-card style everywhere: choices, drug list, location options */
+.sub,.choice,.lc-opt{display:flex;align-items:center;gap:14px;background:#fff!important;border:1px solid var(--card-line,#E6ECF2)!important;border-radius:24px!important;padding:20px 18px!important;box-shadow:none!important}
+.sub b,.choice b,.lc-opt .lc-ot{font-size:16px!important;font-weight:500!important;line-height:1.35;color:#1F2A37}
+.sub .c-ic,.choice .c-ic{color:#111!important}
+.sub>i{display:none!important}
+.sub.sel,.choice.sel,.lc-opt.on{background:#fff!important;border:1.5px solid #6C9FCC!important;box-shadow:none!important}
+.sub.sel .c-ic,.choice.sel .c-ic{color:#4F82B0!important}
+.subs{display:flex;flex-direction:column;gap:12px}
+.fx-card .fx-st,.fx-st{font-size:22px!important;line-height:1.25!important}
+.lc-exit{top:calc(10px + var(--sat,0px))!important}
+.zp1-verify svg:last-child,.zp1-verify>svg+svg{display:none!important}
+.zp1-verify{border-radius:20px!important;padding:16px 18px!important}
+/* talk to someone: list rows */
+.zp1-talk{display:flex!important;flex-direction:column;gap:12px;grid-template-columns:none!important;overflow:visible!important}
+.zp1-talk>a{display:grid!important;grid-template-columns:auto 1fr auto;grid-template-areas:"ic t cta" "ic s cta";align-items:center;column-gap:14px;row-gap:2px;width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;padding:16px 16px!important;border-radius:22px!important;text-align:left}
+.zp1-talk>a .zri{grid-area:ic;margin:0!important;width:48px!important;height:48px!important;border-radius:50%!important;display:grid;place-items:center}
+.zp1-talk>a b{grid-area:t;align-self:end;font-size:16px!important;line-height:1.25!important;margin:0!important}
+.zp1-talk>a small{grid-area:s;align-self:start;font-size:13px!important;line-height:1.35!important;margin:0!important}
+.zp1-talk>a em{grid-area:cta;align-self:center;width:auto!important;min-width:84px;height:40px!important;padding:0 20px!important;margin:0!important;display:grid;place-items:center;border-radius:20px!important}
+/* where to find one: list rows */
+.zp1-find{display:flex!important;flex-direction:column;gap:12px;grid-template-columns:none!important;overflow:visible!important}
+.zp1-find>a{display:grid!important;grid-template-columns:auto 1fr auto;grid-template-areas:"ic t go" "ic s go";align-items:center;column-gap:14px;row-gap:2px;width:100%!important;min-width:0!important;height:auto!important;min-height:0!important;padding:16px 16px!important;border-radius:22px!important;text-align:left}
+.zp1-find>a .zri{grid-area:ic;margin:0!important;width:48px!important;height:48px!important;border-radius:50%!important;display:grid;place-items:center}
+.zp1-find>a b{grid-area:t;align-self:end;font-size:16px!important;line-height:1.25!important;margin:0!important}
+.zp1-find>a small{grid-area:s;align-self:start;font-size:13px!important;line-height:1.35!important;margin:0!important}
+.zp1-find>a>i{grid-area:go;position:static!important;align-self:center;display:grid;place-items:center;opacity:.6}
+.zp1-sos small{margin:-6px 0 8px 52px!important;grid-column:1/-1}
+.zp1-sos b svg{width:26px!important;height:26px!important;padding:12px!important;border-radius:18px!important}
+.zp1-sos small{margin-left:64px!important}
+/* extra soft tones so every help / find card has its own colour */
+.zp1-help>div.zg-lav,.zp1-find a.zg-lav{background:#EEEAF7!important;border-color:#DCD5EE!important}
+.zp1-help>div.zg-lav span,.zp1-find a.zg-lav .zri{color:#6B5BA8!important}
+.zp1-help>div.zg-teal,.zp1-find a.zg-teal{background:#E3F1F0!important;border-color:#C8E1DF!important}
+.zp1-help>div.zg-teal span,.zp1-find a.zg-teal .zri{color:#2F7C78!important}
+.zp1-help>div.zg-stone,.zp1-find a.zg-stone{background:#EFEDE8!important;border-color:#DEDACF!important}
+.zp1-help>div.zg-stone span,.zp1-find a.zg-stone .zri{color:#6B6558!important}
+/* In crisis card: icon centred beside the title + text */
+.zp1-sos{grid-template-columns:1fr 1fr!important}
+.zp1-sos .zs-head{grid-column:1/-1;display:flex;align-items:center;gap:14px}
+.zp1-sos .zs-ic{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:18px;background:#fff;color:#C25445}
+.zp1-sos .zs-tx{min-width:0}
+.zp1-sos .zs-tx b{display:block!important;margin:0 0 4px!important;font:700 20px var(--f-ui)!important;color:#A9423A!important}
+.zp1-sos .zs-tx small{display:block!important;margin:0!important;font:500 15px/1.4 var(--f-body)!important;color:#7A4A44!important}
+.zp1-sos a.zs-main{margin-top:6px}

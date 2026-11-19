@@ -366,7 +366,7 @@ function renderScore(root) {
 
 /* ═════════ HOME — Today's focus card + guided activity page ═════════ */
 const FOCUS = {
-  cravings: { name: 'Craving', icon: 'bolt', tone: 'r', line: 'Cravings look like the biggest challenge today.', cta: 'Start Managing Cravings', mins: 4, page: 'Managing Cravings', hero: 'life', why: 'Surf the urge until it passes',
+  cravings: { name: 'Craving', icon: 'wave', tone: 'r', line: 'Cravings look like the biggest challenge today.', cta: 'Start Managing Cravings', mins: 4, page: 'Managing Cravings', hero: 'life', why: 'Surf the urge until it passes',
     steps: [['Name it and rate it', 'Say it plainly: “I’m having a craving.” Rate it 1–10. Naming it moves it from the driver’s seat to the passenger seat — you’re observing it now, not obeying it.'],
       ['Delay - set a 15-minute deal', 'You don’t have to promise forever, just 15 minutes. Tell yourself “I can revisit this in 15 minutes” and set an actual timer. Almost every craving loses its grip inside that window.'],
       ['Distance - change your surroundings', 'Leave the room, step outside, put physical space between you and the cue. Cravings feed on cues; starve this one.'],
@@ -383,13 +383,13 @@ const FOCUS = {
   stress: { name: 'Stress', icon: 'wind', tone: 'b', line: 'Stress looks like the biggest challenge today.', cta: 'Start Managing Stress', mins: 4, page: 'Managing Stress', hero: 'wind', why: 'Bring your body back to calm',
     steps: [['Pause and notice', 'Stop for a moment. Name where you feel stress in your body.'], ['Breathe out longer', 'Breathe in for 4, out for 6. Repeat five times. A long exhale tells your body it’s safe.'], ['Drop your shoulders', 'Unclench your jaw and hands. Let your shoulders fall away from your ears.'], ['Shrink the task', 'Pick the one smallest thing you can do next. Ignore the rest for now.'], ['Reach out', 'Tell someone how you’re feeling, even in one line.']],
     works: 'Slow breathing activates the body’s calming response, and shrinking tasks makes stress feel manageable.' },
-  emotions: { name: 'Emotions', icon: 'smile', tone: 'p', line: 'Big feelings look like the biggest challenge today.', cta: 'Start Steadying Emotions', mins: 4, page: 'Steadying Emotions', hero: 'smile', why: 'Let the feeling move through',
+  emotions: { name: 'Emotions', icon: 'heart', tone: 'p', line: 'Big feelings look like the biggest challenge today.', cta: 'Start Steadying Emotions', mins: 4, page: 'Steadying Emotions', hero: 'smile', why: 'Let the feeling move through',
     steps: [['Name the feeling', 'Say what it is: sad, angry, anxious. Naming a feeling lowers its volume.'], ['Locate it', 'Notice where it sits in your body, and breathe into that spot.'], ['Let it be', 'You don’t have to fix it. Feelings rise and fall like waves.'], ['Do one kind thing', 'A walk, a shower, music, a warm drink. Pick the gentlest option.'], ['Share it', 'Tell someone you trust, or write one line in your own words.']],
     works: 'Feelings that are named and shared lose their intensity much faster than ones we push away.' },
   body: { name: 'Sleep & Body', icon: 'moon', tone: 'p', line: 'Sleep and your body need care today.', cta: 'Start Body Care', mins: 4, page: 'Caring for Your Body', hero: 'moon', why: 'Give your body what it needs',
     steps: [['Check in with your body', 'Scan from head to toe. Where do you feel tight, tired or sore?'], ['Move gently', 'Stretch or take a short walk. Gentle movement eases pain and tension.'], ['Drink and eat', 'Have water and something simple to eat. Your body needs fuel to recover.'], ['Plan your wind-down', 'Dim the lights, put away screens and keep the same bedtime tonight.'], ['Ask for help', 'If pain or poor sleep keeps up, tell your care team.']],
     works: 'Sleep and pain affect cravings and mood the next day, so small body-care steps protect tomorrow’s recovery.' },
-  drive: { name: 'Motivation', icon: 'rocket', tone: 'g', line: 'Motivation and confidence need a boost today.', cta: 'Start Building Confidence', mins: 3, page: 'Building Confidence', hero: 'rocket', why: 'Remember why you started',
+  drive: { name: 'Motivation', icon: 'target', tone: 'g', line: 'Motivation and confidence need a boost today.', cta: 'Start Building Confidence', mins: 3, page: 'Building Confidence', hero: 'rocket', why: 'Remember why you started',
     steps: [['Name your why', 'Write one reason recovery matters to you today.'], ['Count a win', 'List one thing you’ve done well this week, however small.'], ['Picture tomorrow', 'Imagine a good day ahead. What does it look like?'], ['Pick one small step', 'Choose one thing you can do in the next hour to move forward.'], ['Tell someone', 'Share your win or your plan with someone on your team.']],
     works: 'Remembering your reasons and counting small wins builds confidence, which makes the next step easier.' }
 };
@@ -726,7 +726,7 @@ function lcRender() {
   $('#lc-sheet').innerHTML = `<div class="lc-top">${LC.step > 0 ? `<button class="lc-bk" type="button" data-act="lc-back" aria-label="Previous question">${ic('back', 20, 2.4)}</button>` : ''}<div class="lc-bar"><i style="width:${Math.round((LC.step + 1) / total * 100)}%"></i></div><span class="lc-cnt"><b>${LC.step + 1}</b>/${total}</span></div>
     <div class="lc-content">${LC.step === 0 ? `<div class="lc-intro"><p>Rudra noticed you recently spent time here. A few quick questions about places you’ve visited more than once in the past 30 days.</p></div>` : ''}
     <h2 class="lc-q">${it.q}</h2>${it.hint ? `<p class="lc-hint">${it.hint}</p>` : ''}
-    ${it.type === 'slider' ? `<div class="scard lc-scard"><div class="s-val" id="lc-sv">${it.labels[Lv - 1]}</div><div class="s-row"><input class="s-range lc-range" type="range" min="1" max="5" step="1" value="${Lv}" style="--p:${(Lv - 1) * 25}%" aria-label="${esc(it.q)}"></div><div class="s-lab"><span>${it.labels[0]}</span><span>${it.labels[4]}</span></div></div>` : `<div class="lc-opts">${it.options.map((o, i) => { const t = lcT(o), on = it.type === 'multi' ? Array.isArray(sel) && sel.includes(t) : sel === t;
+    ${it.type === 'slider' ? `<div class="scard lc-scard"><div class="rq-mid">${rqArt(it.key === 'pleasant' ? 'pleasant' : 'confidence')}</div><div class="s-val" id="lc-sv">${it.labels[Lv - 1]}</div><div class="s-row"><input class="s-range lc-range" type="range" min="1" max="5" step="1" value="${Lv}" style="--p:${(Lv - 1) * 25}%" aria-label="${esc(it.q)}"></div><div class="s-lab"><span>${it.labels[0]}</span><span>${it.labels[4]}</span></div></div>` : `<div class="lc-opts">${it.options.map((o, i) => { const t = lcT(o), on = it.type === 'multi' ? Array.isArray(sel) && sel.includes(t) : sel === t;
       return `<button class="lc-opt${on ? ' on' : ''}" type="button" data-act="lc-pick" data-i="${i}"><span class="lc-oi">${ic((it.icons && it.icons[i]) || 'pin', 20, 1.8)}</span><span class="lc-ot">${esc(t)}</span><span class="lc-ck ${it.type === 'multi' ? 'sq' : ''}">${on ? ic('check', 14, 3.2) : ''}</span></button>`; }).join('')}</div>`}</div>
     <div class="lc-foot"><button class="btn lc-next" type="button" data-act="lc-next"${ok ? '' : ' disabled'}>${last ? 'Submit' : 'Next'}</button></div>`;
 }
@@ -769,7 +769,10 @@ document.addEventListener('pointerup', e => { if (e.target.classList && e.target
 Object.assign(ACT, {
   'past-acts': () => {
     const rows = S.txns.filter(x => /^Activity/.test(x.t));
+    /* demo content: fill the list with earlier activities so the screen shows how it looks over time */
+    const names = Object.values(FOCUS).map(f => f.page); let n = 0;
+    while (rows.length < 8) { rows.push({ t: 'Activity: ' + names[n % names.length], d: daysAgo(n + 1) }); n++; }
     pushLayer(`<div class="layer-top"><button class="icon-btn" data-act="close-layer" aria-label="Back">${ic('back', 20)}</button></div><div class="pad"><div class="wal-top" style="padding:0 0 14px"><h1>Past activities</h1></div>
-      ${rows.length ? `<div class="pg-list">${rows.map(x => `<div class="pg-row"><span class="pg-ic">${ic('check', 18, 2.2)}</span><div><b>${esc(x.t.replace(/^Activity:\s*/, '') || 'Activity')}</b><small>${x.d === today() ? 'Today' : x.d === daysAgo(1) ? 'Yesterday' : fmtD(x.d)}</small></div></div>`).join('')}</div>` : `<div class="empty-card"><h3>No activities yet</h3><p>Finish an activity and it will show up here.</p></div>`}</div>`, 'sheet-wrap');
+      ${rows.length ? `<div class="pg-list">${rows.map(x => `<div class="pg-row"><span class="pg-ic">${ic('check', 18, 2.2)}</span><div><b>${esc(x.t.replace(/^Activity:\s*/, '') || 'Activity')}</b><small>${x.d === today() ? 'Today' : x.d === daysAgo(1) ? 'Yesterday' : fmtD(x.d)}</small></div></div>`).join('')}</div>` : `<div class="empty-card"><h3>No activities yet</h3><p>Finish an activity and it will show up here.</p></div>`}</div>`, 'pa-layer');
   }
 });
