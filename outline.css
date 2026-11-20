@@ -291,3 +291,6 @@ h1,h2,h3,.oh-hey,.oh-hey span,.rd-h1,.rd-h1 .g,.rr-h1,.fx-title,.q-text,.rd-card
 .zp1-sos .zs-tx b{display:block!important;margin:0 0 4px!important;font:700 20px var(--f-ui)!important;color:#A9423A!important}
 .zp1-sos .zs-tx small{display:block!important;margin:0!important;font:500 15px/1.4 var(--f-body)!important;color:#7A4A44!important}
 .zp1-sos a.zs-main{margin-top:6px}
+/* week tracker half day: left half = Reflection (solid), right half = Activity (grey) */
+.rw-week .rw-dots i.half{background:linear-gradient(90deg,#4A6E96 50%,#D5DAE0 50%)!important;border-color:transparent!important;background-clip:border-box!important}
+.rw-week .rw-dots i.half{border:0!important;background-origin:border-box!important;background-clip:border-box!important;background-color:#D5DAE0!important;background-image:linear-gradient(90deg,#4A6E96 0,#4A6E96 50%,#D5DAE0 50%,#D5DAE0 100%)!important;background-repeat:no-repeat!important;box-shadow:none!important}
