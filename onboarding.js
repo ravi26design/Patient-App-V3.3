@@ -190,8 +190,8 @@ function renderStep(n) {
   const v = $('#v-setup');
   if (n === 1) {
     const all = [...MEDS, ...S.meds.filter(m => !MEDS.includes(m))];
-    v.innerHTML = `<div class="ob-page">${stepHead(1)}<h1 class="step-h">Which <em>medications</em> are you currently taking?</h1><p class="step-p">Select all that apply, or add your own.</p>${addRow('meds', 'Type a medication…')}
-      <div class="mgrid med-grid" id="mgrid">${all.map((m, i) => tile('meds', m, 'pill', i, S.meds.includes(m))).join('')}</div>${cont()}</div>`;
+    v.innerHTML = `<div class="ob-page">${stepHead(1)}<h1 class="step-h">Which <em>medications</em> are you currently taking?</h1><p class="step-p">Select all that apply, or add your own.</p>
+      <div class="mgrid med-grid" id="mgrid">${all.map((m, i) => tile('meds', m, 'pill', i, S.meds.includes(m))).join('')}<button class="mtile mt-addnew" data-act="add-sheet" data-kind="meds"><span class="mi">${ic('plus', 22, 2.2)}</span><b>Add new</b></button></div>${cont()}</div>`;
   } else {
     v.innerHTML = `<div class="ob-page">${stepHead(2)}<h1 class="step-h">Connect your <em>care team</em></h1><p class="step-p">Link your clinic to securely sync appointments and your treatment plan. This is optional.</p>
       <div class="fld"><label class="lbl" for="cn">Clinic name</label><input class="inp" id="cn" placeholder="Enter clinic name" value="${esc(S.clinic.name)}" autocomplete="off"></div>
@@ -201,10 +201,17 @@ function renderStep(n) {
   }
 }
 
+function addSheet(kind) {
+  const l = pushLayer(`<div class="sheet add-sheet"><span class="grab"></span><h2>Add a medication</h2><p class="step-p">Type the name of a medication you take.</p>
+    <input class="inp" id="add-in" placeholder="Type a medication…" maxlength="40" autocomplete="off" aria-label="Type a medication"><button class="btn" data-act="add-item" data-kind="${kind}">Add</button></div>`, 'sheet-wrap');
+  l.addEventListener('click', e => { if (!e.target.closest('.add-sheet')) popLayer(l); });
+  setTimeout(() => $('#add-in', l).focus({ preventScroll: true }), 350);
+}
 function addItem(kind) {
   const inp = $('#add-in'), v = inp.value.trim(); if (!v) return inp.focus();
+  const lay = inp.closest('.layer, .sheet-wrap'); if (lay) popLayer(lay);
   const list = S[kind]; if (!list.some(x => x.toLowerCase() === v.toLowerCase())) list.push(v);
-  save(); inp.value = ''; renderStep(obStep); $('#add-in').focus({ preventScroll: true });
+  save(); renderStep(obStep);
 }
 function pickItem(el) {
   const kind = el.dataset.kind, v = el.dataset.v, list = S[kind], i = list.indexOf(v);
@@ -231,6 +238,7 @@ Object.assign(ACT, {
   'dob-open': () => dobSheet(),
   'pick-lang': el => { S.profile.lang = el.dataset.k; $$('.lang button').forEach(b => { const on = b === el; b.classList.toggle('on', on); b.innerHTML = (on ? ic('check', 16, 2.6) : '') + (b.dataset.k === 'en' ? 'English' : 'Spanish'); }); },
   'pick-item': pickItem,
+  'add-sheet': el => addSheet(el.dataset.kind),
   'add-item': el => addItem(el.dataset.kind),
   'step-next': stepNext,
   'care-skip': () => { S.clinic = { name: '', code: '' }; finishOnboarding(); },

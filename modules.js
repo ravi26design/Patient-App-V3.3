@@ -28,7 +28,7 @@ const CONTACTS = {
   ],
   team: [
     ['#6E9E80', 'headset', 'Daniel Ruiz', 'Your recovery coach', '(310) 555-0142', [['call', 'tel:3105550142'], ['text', 'sms:3105550142']]],
-    ['#4A90D9', 'hands', 'Tasha Brooks', 'Your peer specialist', '(310) 555-0188', [['call', 'tel:3105550188'], ['text', 'sms:3105550188']]],
+    ['#4A90D9', 'hands', 'Tasha Brooks', 'Your recovery coach', '(310) 555-0188', [['call', 'tel:3105550188'], ['text', 'sms:3105550188']]],
     ['#C97B6F', 'compass', 'Mike R.', 'Sponsor', '(323) 555-0117', [['call', 'tel:3235550117'], ['text', 'sms:3235550117']]]
   ],
   support: [
@@ -37,7 +37,7 @@ const CONTACTS = {
     ['#C97B8A', 'heart', 'Sam', 'Loved one', '(310) 555-0151', [['call', 'tel:3105550151'], ['text', 'sms:3105550151']]],
     ['#C97B6F', 'compass', 'Mike R.', 'Sponsor', '(323) 555-0117', [['call', 'tel:3235550117'], ['text', 'sms:3235550117']]],
     ['#6E9E80', 'headset', 'Daniel Ruiz', 'Your recovery coach', '(310) 555-0142', [['call', 'tel:3105550142'], ['text', 'sms:3105550142']]],
-    ['#4A90D9', 'hands', 'Tasha Brooks', 'Your peer specialist', '(310) 555-0188', [['call', 'tel:3105550188'], ['text', 'sms:3105550188']]],
+    ['#4A90D9', 'hands', 'Tasha Brooks', 'Your recovery coach', '(310) 555-0188', [['call', 'tel:3105550188'], ['text', 'sms:3105550188']]],
     ['#8A6FB0', 'sofa', 'Dr. Elena Rivera', 'Therapist · LCSW', '', [['email', 'mailto:e.rivera@clinic.example']]],
     ['#4FA3A3', 'stetho', 'Dr. Sarah Okafor', 'Your doctor · MD', '', [['email', 'mailto:s.okafor@clinic.example']]]
   ]
@@ -157,7 +157,7 @@ const mk = (id, user, tint, channel, time, text, hearts, supports, replies = [],
 const POSTS = [
   mk(9, 'northstar', 'gold', 'community', '12m ago', 'If today’s your first day back after a hard stretch — that’s not a demotion. Recovery isn’t linear for anyone in here. Proud of you for showing up.', 41, 19),
   mk(8, 'tidewalker', 'blue', 'community', '38m ago', 'Anyone else awake at 2am white-knuckling it? Just needed to say it somewhere.', 27, 8, [{ user: 'riverbend', text: 'Here. Not going anywhere. What’s the loudest thought right now?' }]),
-  mk(104, 'stepbystep', 'blue', 'community', '40m ago', '90 days today. Working Step 4 with my sponsor this week — the searching-and-fearless part is no joke. Anyone got a gentle way to think about the resentment list?', 52, 31, [{ user: 'Marcus T.', text: 'Peer specialist here — a lot of people write the resentment first and the “my part” column last, on a different day. You don’t have to do it all in one sitting.' }]),
+  mk(104, 'stepbystep', 'blue', 'community', '40m ago', '90 days today. Working Step 4 with my sponsor this week — the searching-and-fearless part is no joke. Anyone got a gentle way to think about the resentment list?', 52, 31, [{ user: 'Marcus T.', text: 'Recovery coach here — a lot of people write the resentment first and the “my part” column last, on a different day. You don’t have to do it all in one sitting.' }]),
   mk(7, 'Denise R.', 'blue', 'community', '1h ago', 'Question from a few of you this week: yes, it’s normal for cravings to spike around custody visits. It’s a trigger, not a setback. Plan the hour before and the hour after, not just the visit itself.', 63, 22),
   mk(103, 'toolbox', 'gold', 'community', '1h ago', 'Used the SMART cost-benefit worksheet on my 5pm craving instead of just white-knuckling. Writing down what using would actually cost me tomorrow killed most of the urge.', 38, 16),
   mk(6, 'emberly', 'coral', 'community', '2h ago', 'Does buprenorphine make anyone else feel foggy in the mornings, or is that just me still adjusting?', 9, 4, [{ user: 'James O.', text: 'Common in the first few weeks — worth mentioning your dose timing to your prescriber. Mine moved mine to bedtime and it helped a lot.' }]),
@@ -229,7 +229,7 @@ function renderCommunity() {
   <div class="pad cm">
     <div class="hub-card"><div class="hub-head"><span class="hub-ic" style="background:linear-gradient(145deg,#7FB0DC,#3F6E99)">${ic('shield', 22, 1.8)}</span><div><b>A safe place, always anonymous</b><small>Support whenever you need it</small></div></div>
       <div class="hub-opts sp">
-        <button class="sp-card g" data-act="cm-soon" data-t="1:1 support"><span class="sp-ic">${ic('hands', 22, 1.8)}</span><b>Want 1:1 support?</b><small>A peer specialist or coach, privately</small><span class="sp-go">${ic('chev', 16, 2.2)}</span></button>
+        <button class="sp-card g" data-act="cm-soon" data-t="1:1 support"><span class="sp-ic">${ic('hands', 22, 1.8)}</span><b>Want 1:1 support?</b><small>A recovery coach, privately</small><span class="sp-go">${ic('chev', 16, 2.2)}</span></button>
         <button class="sp-card c" data-act="cm-soon" data-t="Find a meeting"><span class="sp-ic">${ic('compass', 22, 1.8)}</span><b>Find a Meeting</b><small>In-person, virtual &amp; hybrid</small><span class="sp-go">${ic('chev', 16, 2.2)}</span></button></div></div>
     <div class="hub-card"><div class="hub-head"><span class="hub-ic" style="background:#5B92CE">${ic('chat', 22, 1.8)}</span><div><b>Find your people</b><small>Join the conversation</small></div></div>
       <button class="cr-room" data-act="cm-room"><span class="cr-ic">${ic('users', 24, 1.8)}</span><span class="cr-tx"><b>Community Room</b><small>One shared space for everyone</small><span class="cr-live"><span class="cr-av"><i style="background:#7FB0DC">N</i><i style="background:#8FBF9F">T</i><i style="background:#E0B25C">R</i></span><em><u></u>214 here today</em></span></span><span class="cr-go">${ic('chev', 18, 2.2)}</span></button></div>
@@ -239,7 +239,7 @@ function renderCommunity() {
 }
 function roomsSheet() {
   const cnt = k => POSTS.filter(p => k === 'all' || p.channel === k).length;
-  const l = pushLayer(`<div class="sheet rooms-sheet"><span class="grab"></span><h2>All Rooms</h2><p class="muted" style="font-size:16px;line-height:1.45">Browse every room and jump into the one that fits. Every room is watched over by a certified peer specialist.</p>
+  const l = pushLayer(`<div class="sheet rooms-sheet"><span class="grab"></span><h2>All Rooms</h2><p class="muted" style="font-size:16px;line-height:1.45">Browse every room and jump into the one that fits. Every room is watched over by a certified recovery coach.</p>
     <div class="ar-list">${[['all', ['🌐', 'All Rooms', '#5B7FD6']], ...Object.entries(ROOMS)].map(([k, r]) => `<button class="ar-row${CM.room === k ? ' on' : ''}" data-act="cm-room" data-r="${k}"><i style="--rc:${r[2]}">${r[0]}</i><b>${r[1]}</b><em>${cnt(k)}</em></button>`).join('')}</div>
     <button class="btn ghost" style="margin-top:12px" data-act="close-layer">Close</button></div>`, 'sheet-wrap');
   l.addEventListener('click', e => { if (e.target === l) popLayer(l); });
@@ -248,7 +248,7 @@ function roomsSheet() {
 
 /* ═════════ PROFILE (Me) — content ported from Patient Dashboard Version 2.0 ═════════ */
 const PF_PEOPLE = [
-  ['#6E9E80', 'DR', 'Daniel Ruiz', 'Your recovery coach', '(310) 555-0142'], ['#4A90D9', 'TB', 'Tasha Brooks', 'Your peer specialist', '(310) 555-0188'],
+  ['#6E9E80', 'DR', 'Daniel Ruiz', 'Your recovery coach', '(310) 555-0142'], ['#4A90D9', 'TB', 'Tasha Brooks', 'Your recovery coach', '(310) 555-0188'],
   ['#C97B6F', 'MR', 'Mike R.', 'Sponsor · CPRS', '(323) 555-0117'], ['#8A6FB0', 'DE', 'Dr. Elena Rivera', 'Therapist · LCSW', '(310) 555-0164'],
   ['#D8AD63', 'MS', 'Mom (Sarah M.)', 'Family', '(562) 555-0193'], ['#5E8560', 'JP', 'Jack P.', 'Supportive friend', '(213) 555-0175']
 ];
@@ -722,7 +722,8 @@ function lcMap() {
 }
 function lcRender() {
   const it = LC_Q[LC.step], total = LC.skip ? 1 : LC_Q.length, sel = LC.ans[it.key], last = LC.skip || LC.step >= LC_Q.length - 1;
-  const ok = it.type === 'multi' ? Array.isArray(sel) && sel.length > 0 : !!sel, Lv = it.type === 'slider' ? (sel ? it.labels.indexOf(sel) + 1 : 3) : 0;
+  const ok = it.type === 'slider' ? true : it.type === 'multi' ? Array.isArray(sel) && sel.length > 0 : !!sel, Lv = it.type === 'slider' ? (sel ? it.labels.indexOf(sel) + 1 : 3) : 0;
+  { const sh = $('#lc-sheet'); if (sh && sh.parentElement) sh.parentElement.classList.toggle('lc-slide', it.type === 'slider'); }
   $('#lc-sheet').innerHTML = `<div class="lc-top">${LC.step > 0 ? `<button class="lc-bk" type="button" data-act="lc-back" aria-label="Previous question">${ic('back', 20, 2.4)}</button>` : ''}<div class="lc-bar"><i style="width:${Math.round((LC.step + 1) / total * 100)}%"></i></div><span class="lc-cnt"><b>${LC.step + 1}</b>/${total}</span></div>
     <div class="lc-content">${LC.step === 0 ? `<div class="lc-intro"><p>Rudra noticed you recently spent time here. A few quick questions about places you’ve visited more than once in the past 30 days.</p></div>` : ''}
     <h2 class="lc-q">${it.q}</h2>${it.hint ? `<p class="lc-hint">${it.hint}</p>` : ''}
@@ -736,7 +737,7 @@ Object.assign(ACT, {
     if (it.type === 'multi') { let arr = LC.ans[it.key] || []; if (t === 'None of the above') arr = arr.includes(t) ? [] : [t]; else { arr = arr.filter(x => x !== 'None of the above'); const k = arr.indexOf(t); k >= 0 ? arr.splice(k, 1) : arr.push(t); } LC.ans[it.key] = arr; }
     else { LC.ans[it.key] = t; if (it.key === 'place') LC.skip = !!it.options[+el.dataset.i].end; }
     lcRender(); },
-  'lc-next': el => { if (el.disabled) return; const last = LC.skip || LC.step >= LC_Q.length - 1;
+  'lc-next': el => { if (el.disabled) return; { const q = LC_Q[LC.step]; if (q && q.type === 'slider' && !LC.ans[q.key]) LC.ans[q.key] = q.labels[2]; } const last = LC.skip || LC.step >= LC_Q.length - 1;
     if (last) { S.locDone = today(); save(); $$('.lc-bdg').forEach(b => b.remove()); popLayer(layerOf(el)); toast('Location reflection complete'); return; }
     LC.step++; lcRender(); const l = $('.lc-layer'); if (l) l.scrollTop = 0; },
   'lc-exit': el => popLayer(layerOf(el)),
@@ -772,7 +773,10 @@ Object.assign(ACT, {
     /* demo content: fill the list with earlier activities so the screen shows how it looks over time */
     const names = Object.values(FOCUS).map(f => f.page); let n = 0;
     while (rows.length < 8) { rows.push({ t: 'Activity: ' + names[n % names.length], d: daysAgo(n + 1) }); n++; }
-    pushLayer(`<div class="layer-top"><button class="icon-btn" data-act="close-layer" aria-label="Back">${ic('back', 20)}</button></div><div class="pad"><div class="wal-top" style="padding:0 0 14px"><h1>Past activities</h1></div>
-      ${rows.length ? `<div class="pg-list">${rows.map(x => `<div class="pg-row"><span class="pg-ic">${ic('check', 18, 2.2)}</span><div><b>${esc(x.t.replace(/^Activity:\s*/, '') || 'Activity')}</b><small>${x.d === today() ? 'Today' : x.d === daysAgo(1) ? 'Yesterday' : fmtD(x.d)}</small></div></div>`).join('')}</div>` : `<div class="empty-card"><h3>No activities yet</h3><p>Finish an activity and it will show up here.</p></div>`}</div>`, 'pa-layer');
+    const items = (rows.map((x, i) => ({ st: i === 2 || i === 5 ? 'pend' : 'done', name: x.t.replace(/^Activity:\s*/, '') || 'Activity', when: x.d === today() ? 'Today' : x.d === daysAgo(1) ? 'Yesterday' : fmtD(x.d) })));
+    const l = pushLayer(`<div class="layer-top"><button class="icon-btn" data-act="close-layer" aria-label="Back">${ic('back', 20)}</button></div><div class="pad"><div class="wal-top" style="padding:0 0 14px"><h1>Past activities</h1></div>
+      <div class="pa-filter" role="tablist">${[['all', 'All'], ['done', 'Completed'], ['pend', 'Pending']].map(([k, t], i) => `<button class="pa-f ${i ? '' : 'on'}" data-f="${k}" role="tab">${t}</button>`).join('')}</div>
+      <div class="pg-list pa-all">${items.map(x => `<div class="pg-row" data-st="${x.st}"><span class="pg-ic ${x.st === 'pend' ? 'pend' : ''}">${ic(x.st === 'pend' ? 'clock' : 'check', 18, 2.2)}</span><div><b>${esc(x.name)}</b><small>${x.when}</small></div><span class="pa-st ${x.st}">${x.st === 'pend' ? 'Pending' : 'Completed'}</span></div>`).join('')}</div></div>`, 'pa-layer');
+    l.addEventListener('click', e => { const b = e.target.closest('.pa-f'); if (!b) return; $$('.pa-f', l).forEach(x => x.classList.toggle('on', x === b)); $$('.pa-all .pg-row', l).forEach(r => r.hidden = b.dataset.f !== 'all' && r.dataset.st !== b.dataset.f); });
   }
 });

@@ -80,7 +80,7 @@ const SCREENS = [
   { id: 'unreported', type: 'yesno', title: 'Have you used non-prescribed opioids that you didn’t report?' },
   { id: 'substances', type: 'multi', title: 'Which of these other drugs have you used in the past 24 hours?' }
 ].flat();
-const MED_OPTS = [['Yes, my full dose', 'checkc'], ['Only part of my dose', 'partial'], ['No, I didn’t take it', 'xc'], ['Medication no longer prescribed', 'info']];
+const MED_OPTS = [['Yes, my full dose', 'pill'], ['Only part of my dose', 'partial'], ['No, I didn’t take it', 'xc'], ['Medication no longer prescribed', 'info']];
 const SUBS = [['Alcohol', 'beer'], ['Cannabis (marijuana, pot, hash, K2, spice, etc.)', 'leaf'], ['Stimulants (cocaine, meth, speed, ecstasy, molly, Adderall, etc.)', 'bolt'],
   ['Inhalants (nitrous, glue, petrol, paint thinner, etc.)', 'wind'], ['Sedatives or sleeping pills (Valium, Serepax, Rohypnol, etc.)', 'pill'],
   ['Hallucinogens (LSD, acid, mushrooms, PCP, special K, etc.)', 'sparkle'], ['Other', 'more'], ['None - I did not use any substances', 'checkc']];
@@ -142,7 +142,7 @@ const medName = () => S.meds.length === 1 ? S.meds[0] : S.meds.length > 1 ? 'med
 const lastRaw = () => { const p = S.history[S.history.length - 1]; return p && p.raw ? p.raw : null; };
 const screenTitle = s => s.id === 'meds' ? `Did you take your ${medName()} yesterday (${yesterday()})?` : s.title;
 function screenReady(s) {
-  if (s.type === 'sliders') return s.items.every(i => CI.touched[i.k]);   // must slide (or tap) before continuing
+  if (s.type === 'sliders') return true;   // default value is a valid answer
   if (s.id === 'meds') return CI.a.meds != null;
   if (s.id === 'unreported') return CI.a.unreported === 'no' || (CI.a.unreported === 'yes' && (CI.a.dates || []).length > 0);
   return !!(CI.a.subs && CI.a.subs.length);
@@ -260,6 +260,7 @@ function prepScreen(root) {
 }
 function advance() {
   if (!CI) return; const s = SCREENS[CI.i]; if (!screenReady(s)) return;
+  if (s.type === 'sliders') s.items.forEach(i => { if (CI.a[i.k] == null) CI.a[i.k] = 0; CI.touched[i.k] = true; });
   CI.done[s.id] = true; CI.i++; renderCI(); CI.layer.scrollTop = 0;
 }
 function sliderInput(el) {

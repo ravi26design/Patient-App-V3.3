@@ -113,7 +113,7 @@ const JOURNAL = [
     take: ['Get safe first: naloxone nearby, never alone.', 'Tell someone: your person, your prescriber or a peer.', 'Look at what led up to it, without blaming yourself.'],
     body: ['Many people have a lapse on the way to long-term recovery. It can bring shame, and shame makes it harder to reach out. Try to treat it the way you’d treat a friend’s: as a hard moment, not proof that you’ve failed.',
       'Safety comes first. Your tolerance may be lower than you think. Keep naloxone nearby and don’t use alone.',
-      'Then tell someone. Your prescriber needs to know, especially if you’re on medication. Their job is to help you get steady, not to punish you. A peer specialist or your person can help you through the day.',
+      'Then tell someone. Your prescriber needs to know, especially if you’re on medication. Their job is to help you get steady, not to punish you. A recovery coach or your person can help you through the day.',
       'Later, when things are calmer, look at what led up to it: a place, a feeling, a person, a stretch without sleep. That’s useful information for your plan.'],
     srcs: ['helpline', 'cdc'] },
   { id: 'j10', tp: 'health', src: 'CDC', min: 2, t: 'Health checkups worth asking about', dek: 'A few simple tests and visits that protect your health in recovery.',
@@ -266,7 +266,7 @@ PODS.forEach(p => p.tp = _relTag(p.tp)); BOOKS.forEach(b => b.tp = _relTag(b.tp)
   }
 
   /* ═════════ v47: COMMUNITY ROOM ═════════
-     A moderated feed for people in treatment at the same center. Posts are reviewed by a peer specialist before
+     A moderated feed for people in treatment at the same center. Posts are reviewed by a recovery coach before
      others see them; comments go live and the moderator can remove them. Tabs: Room · Meetings · 1:1 Support · Events. */
   const NA_URL = 'https://na.org/meetingsearch/', ARCO_URL = 'https://facesandvoicesofrecovery.org/arco-members-on-the-map/', PHX_URL = 'https://thephoenix.org/explore-events';
   const MOD = { n: 'Jordan', role: 'Peer Recovery Specialist', c: '#3F6E99', mod: true };
@@ -401,7 +401,7 @@ PODS.forEach(p => p.tp = _relTag(p.tp)); BOOKS.forEach(b => b.tp = _relTag(b.tp)
       <p class="zmt-tip">${ic('sparkle', 15, 2)}First time? You can just listen.</p>`;
   }
   function oneHTML() {
-    /* 1:1 support. Public directories only: the US has no national searchable list of individual peer specialists,
+    /* 1:1 support. Public directories only: the US has no national searchable list of individual recovery coaches,
        so we point to searchable directories of the places that employ them. Verify links before release. */
     const HELP = [['target', 'Make a plan', 'sage'], ['people', 'First meeting', 'blue'], ['home', 'Housing & work', 'gold'], ['calendar', 'Appointments', 'lav'], ['wind', 'Cravings', 'teal'], ['heart', 'Family', 'stone']];
     const FIND = [['https://facesandvoicesofrecovery.org/arco-members-on-the-map/', 'pin', 'lav', 'Recovery centers', 'Map by location'],
@@ -412,7 +412,7 @@ PODS.forEach(p => p.tp = _relTag(p.tp)); BOOKS.forEach(b => b.tp = _relTag(b.tp)
         <circle cx="76" cy="46" r="12" fill="#fff"/><rect x="61" y="62" width="30" height="44" rx="15" fill="#fff"/>
         <circle cx="116" cy="52" r="10.5" fill="#F0C9BE"/><rect x="103" y="66" width="26" height="40" rx="13" fill="#F0C9BE"/>
         <path d="M96 38c-7-4-10-8-10-11a5 5 0 0 1 10-1a5 5 0 0 1 10 1c0 3-3 7-10 11z" fill="#E58E80"/></svg>
-        <h2>Someone who’s been there</h2><p>A peer specialist walks with you, one-on-one.</p>
+        <h2>Someone who’s been there</h2><p>A recovery coach walks with you, one-on-one.</p>
         <div class="zp1-tags"><span>${ic('check', 12, 3)}Lived experience</span><span>${ic('check', 12, 3)}Often free</span><span>${ic('check', 12, 3)}Trained</span></div>
         <a class="zp1-cta" href="${ARCO_URL}" target="_blank" rel="noopener">${ic('pin', 18, 2)}Find support near me${ic('ext', 15, 2.2)}</a></section>
 
@@ -431,7 +431,7 @@ PODS.forEach(p => p.tp = _relTag(p.tp)); BOOKS.forEach(b => b.tp = _relTag(b.tp)
       <a class="zp1-verify" href="https://internationalcredentialing.org/" target="_blank" rel="noopener">${ic('shield', 16, 2)}Check someone’s peer certification</a>
 
       <div class="zp1-sos"><div class="zs-head"><span class="zs-ic">${ic('life', 26, 2)}</span><div class="zs-tx"><b>In crisis?</b><small>Free, private and open 24/7. You do not have to wait.</small></div></div><a class="zs-main" href="tel:988">Call 988</a><a href="sms:988">Text 988</a><a href="tel:911">911</a></div>
-      <p class="zev-note">${ic('info', 13, 2)}Peer specialists aren’t therapists or doctors. Ask your care team about medication.</p>`;
+      <p class="zev-note">${ic('info', 13, 2)}Recovery coaches aren’t therapists or doctors. Ask your care team about medication.</p>`;
   }
   function eventsHTML() {
     const set = !!S.zEvStep;

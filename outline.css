@@ -294,3 +294,43 @@ h1,h2,h3,.oh-hey,.oh-hey span,.rd-h1,.rd-h1 .g,.rr-h1,.fx-title,.q-text,.rd-card
 /* week tracker half day: left half = Reflection (solid), right half = Activity (grey) */
 .rw-week .rw-dots i.half{background:linear-gradient(90deg,#4A6E96 50%,#D5DAE0 50%)!important;border-color:transparent!important;background-clip:border-box!important}
 .rw-week .rw-dots i.half{border:0!important;background-origin:border-box!important;background-clip:border-box!important;background-color:#D5DAE0!important;background-image:linear-gradient(90deg,#4A6E96 0,#4A6E96 50%,#D5DAE0 50%,#D5DAE0 100%)!important;background-repeat:no-repeat!important;box-shadow:none!important}
+
+/* Add-new medication tile + bottom sheet */
+.mtile.mt-addnew{background:#EAF2FA!important;border:1.5px dashed #6C9FCC!important;color:#3E6E9E!important;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.mtile.mt-addnew .mi{background:#fff!important;color:#3E6E9E!important;width:52px;height:52px;border-radius:50%!important;display:grid;place-items:center}
+.mtile.mt-addnew b{color:#3E6E9E!important;font-weight:600}
+.add-sheet{padding:12px 20px calc(24px + var(--sab,0px))}
+.add-sheet h2{margin:14px 0 4px}
+.add-sheet .step-p{margin:0 0 16px}
+.add-sheet .add-row{margin:0}
+.add-sheet{padding:10px 20px calc(24px + var(--sab,0px))!important;border-radius:28px 28px 0 0}
+.add-sheet .grab{display:block;margin:0 auto 18px}
+.add-sheet h2{margin:0 0 6px;text-align:left}
+.add-sheet .step-p{margin:0 0 18px;text-align:left}
+.add-sheet .inp{width:100%;height:56px;box-sizing:border-box;background:#fff;border:1px solid #D5DEE8;border-radius:18px;padding:0 18px;font-size:16px;margin:0 0 14px}
+.add-sheet .inp:focus{border-color:#6C9FCC;outline:0}
+.add-sheet .btn{width:100%}
+.add-sheet .grab{display:block!important;width:40px;height:5px;border-radius:3px;background:#C9D2DC;margin:0 auto 18px!important}
+.ob-page .med-grid .mtile.mt-addnew{background:#EAF2FA!important;border:1.5px dashed #6C9FCC!important}
+.ob-page .med-grid .mtile.mt-addnew .mi{width:52px!important;height:52px!important;background:#fff!important;color:#3E6E9E!important;font-size:inherit}
+.ob-page .med-grid .mtile.mt-addnew .mi *{display:block!important}
+.ob-page .med-grid .mtile.mt-addnew .mi svg{width:24px!important;height:24px!important;stroke:#3E6E9E!important;stroke-width:2.2!important}
+.ob-page .med-grid .mtile.mt-addnew .mi::after{display:none!important;content:none!important}
+.ob-page .med-grid .mtile.mt-addnew b{color:#3E6E9E!important}
+/* location slider steps: whole card fits on screen, no scrolling */
+.lc-slide{overflow:hidden!important}
+.lc-slide .lc-map{height:20%!important;min-height:130px!important}
+.lc-slide .lc-sheet{min-height:calc(100% - 20% + 24px)!important}
+.lc-slide .lc-intro{display:none}
+.lc-slide .lc-scard{padding:12px 18px 18px!important}
+.lc-slide .lc-scard .rq-mid{zoom:.6;margin-bottom:0!important}
+.lc-slide .lc-scard .s-val{margin:14px 0 14px!important}
+.lc-layer:has(.lc-slide){overflow:hidden!important}
+.lc-slide.lc-wrap{height:100%;min-height:100%;display:flex;flex-direction:column}
+.lc-slide .lc-sheet{flex:1}
+/* same map / sheet proportions on every location step */
+.lc-map,.lc-slide .lc-map{height:26%!important;min-height:170px!important}
+.lc-sheet,.lc-slide .lc-sheet{min-height:calc(100% - 26% + 24px)!important}
+.lc-slide .lc-scard{margin-top:22px!important;padding:24px 18px 26px!important}
+.lc-slide .lc-scard .rq-mid{zoom:.82!important}
+.lc-slide .lc-scard .s-val{margin:20px 0 20px!important}
