@@ -5,7 +5,15 @@
 
 let obEdit = null;   // 'me' while editing a section from the Me tab
 
-const MEDS = ['Buprenorphine', 'Methadone', 'Naltrexone', 'Suboxone', 'Naloxone', 'Lofexidine'];
+const MEDS = ['Buprenorphine', 'Long-acting buprenorphine', 'Methadone', 'Naltrexone', 'Long-acting naltrexone', 'Lofexidine', 'Clonidine'];
+const MED_ROWS = [
+  ['Buprenorphine', 'Buprenorphine (with or without naloxone) film/tablet (e.g., Suboxone, Zubsolv, Subutex, generic buprenorphine, “strips” or “subs”)', 'pill'],
+  ['Long-acting buprenorphine', 'Long-acting buprenorphine injection (e.g., Sublocade, Brixadi)', 'bolt'],
+  ['Methadone', 'Methadone liquid or tablet (e.g., Methadose, Dolophine, Diskets)', 'pill'],
+  ['Naltrexone', 'Naltrexone pill (e.g., generic naltrexone, Revia)', 'pill'],
+  ['Long-acting naltrexone', 'Long-acting naltrexone injection (e.g., Vivitrol)', 'bolt'],
+  ['Lofexidine', 'Lofexidine (e.g., Lucemyra)', 'pill'],
+  ['Clonidine', 'Clonidine (e.g., Catapres)', 'pill']];
 const RELIEF = [['Go for a walk', 'run'], ['Call someone', 'phone'], ['Music', 'music'], ['Hot shower', 'shower'], ['Breathe', 'wind'], ['Play a game', 'game'],
   ['Pray / meditate', 'sparkle'], ['Work out', 'dumbbell'], ['Drink water', 'drop'], ['Time with a pet', 'paw']];
 const URGES = [['High-risk places', 'pin'], ['Having money', 'coin'], ['Stress', 'bolt'], ['Relationships', 'heart'], ['Reminders of the drug', 'eye'], ['Boredom', 'cloud'], ['Exhaustion', 'moon']];
@@ -189,9 +197,10 @@ function renderStep(n) {
   obStep = n; showView('setup'); $('#nav').hidden = true;
   const v = $('#v-setup');
   if (n === 1) {
-    const all = [...MEDS, ...S.meds.filter(m => !MEDS.includes(m))];
-    v.innerHTML = `<div class="ob-page">${stepHead(1)}<h1 class="step-h">Which <em>medications</em> are you currently taking?</h1><p class="step-p">Select all that apply, or add your own.</p>
-      <div class="mgrid med-grid" id="mgrid">${all.map((m, i) => tile('meds', m, 'pill', i, S.meds.includes(m))).join('')}<button class="mtile mt-addnew" data-act="add-sheet" data-kind="meds"><span class="mi">${ic('plus', 22, 2.2)}</span><b>Add new</b></button></div>${cont()}</div>`;
+    const extra = S.meds.filter(m => !MEDS.includes(m));
+    const row = (v, label, icon) => `<button class="sub ${S.meds.includes(v) ? 'sel' : ''}" data-act="pick-med" data-v="${esc(v)}"><span class="c-ic">${ic(icon, 24, 1.8)}</span><b>${esc(label)}</b><i>${ic('check', 14, 3)}</i></button>`;
+    v.innerHTML = `<div class="ob-page">${stepHead(1)}<h1 class="step-h">Which <em>medications</em> are currently prescribed or given to you to help manage opioid cravings, withdrawal, or recovery?</h1><p class="step-p">Select all that apply.</p>
+      <div class="subs med-list" id="mgrid">${MED_ROWS.map(([v, l, i]) => row(v, l, i)).join('')}${extra.map(m => row(m, m, 'pill')).join('')}<button class="sub med-other" data-act="add-sheet" data-kind="meds"><span class="c-ic">${ic('plus', 24, 1.8)}</span><b>Add other medication</b></button></div>${cont()}</div>`;
   } else {
     v.innerHTML = `<div class="ob-page">${stepHead(2)}<h1 class="step-h">Connect your <em>care team</em></h1><p class="step-p">Link your clinic to securely sync appointments and your treatment plan. This is optional.</p>
       <div class="fld"><label class="lbl" for="cn">Clinic name</label><input class="inp" id="cn" placeholder="Enter clinic name" value="${esc(S.clinic.name)}" autocomplete="off"></div>
@@ -238,6 +247,7 @@ Object.assign(ACT, {
   'dob-open': () => dobSheet(),
   'pick-lang': el => { S.profile.lang = el.dataset.k; $$('.lang button').forEach(b => { const on = b === el; b.classList.toggle('on', on); b.innerHTML = (on ? ic('check', 16, 2.6) : '') + (b.dataset.k === 'en' ? 'English' : 'Spanish'); }); },
   'pick-item': pickItem,
+  'pick-med': el => { const v = el.dataset.v, i = S.meds.indexOf(v); if (i >= 0) S.meds.splice(i, 1); else S.meds.push(v); el.classList.toggle('sel', i < 0); save(); },
   'add-sheet': el => addSheet(el.dataset.kind),
   'add-item': el => addItem(el.dataset.kind),
   'step-next': stepNext,

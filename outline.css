@@ -334,3 +334,11 @@ h1,h2,h3,.oh-hey,.oh-hey span,.rd-h1,.rd-h1 .g,.rr-h1,.fx-title,.q-text,.rd-card
 .lc-slide .lc-scard{margin-top:22px!important;padding:24px 18px 26px!important}
 .lc-slide .lc-scard .rq-mid{zoom:.82!important}
 .lc-slide .lc-scard .s-val{margin:20px 0 20px!important}
+.med-list{margin-top:18px;padding-bottom:16px}
+.med-list .sub{text-align:left;width:100%}
+.med-list .sub b{font-weight:500}
+.med-list .med-other{background:#EAF2FA!important;border:1.5px dashed #6C9FCC!important}
+.med-list .med-other,.med-list .med-other .c-ic{color:#3E6E9E!important}
+.ob-page .step-h{font-size:24px!important;line-height:1.22!important}
+.med-list .sub:not(.med-other) .c-ic{display:none!important}
+.med-list .sub:not(.med-other){padding:18px 20px!important}
