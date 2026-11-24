@@ -83,7 +83,7 @@ const SCREENS = [
 const MED_OPTS = [['Yes, my full dose', 'pill'], ['Only part of my dose', 'partial'], ['No, I didn’t take it', 'xc'], ['Medication no longer prescribed', 'info']];
 const SUBS = [['Alcohol', 'beer'], ['Cannabis (marijuana, pot, hash, K2, spice, etc.)', 'leaf'], ['Stimulants (cocaine, meth, speed, ecstasy, molly, Adderall, etc.)', 'bolt'],
   ['Inhalants (nitrous, glue, petrol, paint thinner, etc.)', 'wind'], ['Sedatives or sleeping pills (Valium, Serepax, Rohypnol, etc.)', 'pill'],
-  ['Hallucinogens (LSD, acid, mushrooms, PCP, special K, etc.)', 'sparkle'], ['Other', 'more'], ['None - I did not use any substances', 'checkc']];
+  ['Hallucinogens (LSD, acid, mushrooms, PCP, special K, etc.)', 'sparkle'], ['None - I did not use any substances', 'checkc'], ['Other', 'more']];
 const NONE = 'None - I did not use any substances';
 
 /* ═════════ scoring ═════════ */
@@ -230,11 +230,11 @@ function renderCI() {
 function prepScreenB(root) {
   const sig = ['Cravings', 'Stress', 'Mood', 'Sleep', 'Pain', 'Energy', 'Confidence'];
   const layers = [[40, 90, 140, 190], [25, 65, 105, 145, 185], [65, 115, 165], [90, 140]], xs = [26, 96, 164, 234];
-  const lines = []; layers.forEach((a, li) => { if (li < layers.length - 1) a.forEach((y1, i) => layers[li + 1].forEach((y2, j) => lines.push(`<line x1="${xs[li]}" y1="${y1}" x2="${xs[li + 1]}" y2="${y2}" style="--d:${((i * 3 + j * 5 + li * 2) % 9) * .3}s"/>`))); });
-  const nodes = layers.map((a, li) => a.map((y, i) => `<circle cx="${xs[li]}" cy="${y}" r="${li === 0 || li === layers.length - 1 ? 7 : 5.5}" style="--d:${(li * 1.1 + i * .35).toFixed(2)}s"/>`).join('')).join('');
+  const lines = []; layers.forEach((a, li) => { if (li < layers.length - 1) a.forEach((y1, i) => layers[li + 1].forEach((y2, j) => lines.push(`<line class="l${li}" x1="${xs[li]}" y1="${y1}" x2="${xs[li + 1]}" y2="${y2}" style="--d:${((i * 3 + j * 5 + li * 2) % 9) * .3}s"/>`))); });
+  const nodes = layers.map((a, li) => a.map((y, i) => `<circle class="l${li}" cx="${xs[li]}" cy="${y}" r="${li === 0 || li === layers.length - 1 ? 7 : 5.5}" style="--d:${(li * 1.1 + i * .35).toFixed(2)}s"/>`).join('')).join('');
   root.innerHTML = `<div class="prepb"><h1>Analyzing your reflection</h1><p class="pb-sub" id="pb-stage">Reading your 7 signals</p><span class="pb-tag"><i></i>Rudra Insights is analyzing</span>
     <div class="pb-net"><svg viewBox="0 0 260 230" aria-hidden="true"><g class="pb-lines">${lines.join('')}</g><g class="pb-nodes">${nodes}</g><rect class="pb-scan" x="0" y="0" width="38" height="230"/></svg></div>
-    <div class="pb-chips">${sig.map((t, i) => `<span style="--i:${i}">${t}</span>`).join('')}</div>
+    <div class="pb-chips">${sig.map((t, i) => `<span class="c${i}" style="--i:${i}">${t}</span>`).join('')}</div>
     </div>`;
   CI.layer && (CI.layer.scrollTop = 0);
   const lay = CI.layer, stages = ['Reading your 7 signals', 'Looking for patterns', 'Comparing with your recent days', 'Weighing what matters most', 'Estimating your Recovery Score', 'Writing your summary'];
