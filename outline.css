@@ -342,3 +342,7 @@ h1,h2,h3,.oh-hey,.oh-hey span,.rd-h1,.rd-h1 .g,.rr-h1,.fx-title,.q-text,.rd-card
 .ob-page .step-h{font-size:24px!important;line-height:1.22!important}
 .med-list .sub:not(.med-other) .c-ic{display:none!important}
 .med-list .sub:not(.med-other){padding:18px 20px!important}
+.ob-page .med-list{margin-top:0!important}
+.ob-page .step-p{margin-bottom:14px!important}
+.ob-page .mgrid.med-list,.ob-page .subs.med-list{margin-top:0!important;padding-top:0!important}
+.med-list .sub:not(.med-other) .c-ic{display:inline-flex!important;flex:none}

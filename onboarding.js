@@ -7,13 +7,13 @@ let obEdit = null;   // 'me' while editing a section from the Me tab
 
 const MEDS = ['Buprenorphine', 'Long-acting buprenorphine', 'Methadone', 'Naltrexone', 'Long-acting naltrexone', 'Lofexidine', 'Clonidine'];
 const MED_ROWS = [
-  ['Buprenorphine', 'Buprenorphine (with or without naloxone) film/tablet (e.g., Suboxone, Zubsolv, Subutex, generic buprenorphine, “strips” or “subs”)', 'pill'],
+  ['Buprenorphine', 'Buprenorphine film/tablet (e.g., Suboxone, Zubsolv, “strips”, “subs”)', 'pill'],
   ['Long-acting buprenorphine', 'Long-acting buprenorphine injection (e.g., Sublocade, Brixadi)', 'bolt'],
-  ['Methadone', 'Methadone liquid or tablet (e.g., Methadose, Dolophine, Diskets)', 'pill'],
+  ['Methadone', 'Methadone liquid or tablet (e.g., Methadose, Dolophine, Diskets)', 'drop'],
   ['Naltrexone', 'Naltrexone pill (e.g., generic naltrexone, Revia)', 'pill'],
   ['Long-acting naltrexone', 'Long-acting naltrexone injection (e.g., Vivitrol)', 'bolt'],
-  ['Lofexidine', 'Lofexidine (e.g., Lucemyra)', 'pill'],
-  ['Clonidine', 'Clonidine (e.g., Catapres)', 'pill']];
+  ['Lofexidine', 'Lofexidine (e.g., Lucemyra)', 'shield'],
+  ['Clonidine', 'Clonidine (e.g., Catapres)', 'shield']];
 const RELIEF = [['Go for a walk', 'run'], ['Call someone', 'phone'], ['Music', 'music'], ['Hot shower', 'shower'], ['Breathe', 'wind'], ['Play a game', 'game'],
   ['Pray / meditate', 'sparkle'], ['Work out', 'dumbbell'], ['Drink water', 'drop'], ['Time with a pet', 'paw']];
 const URGES = [['High-risk places', 'pin'], ['Having money', 'coin'], ['Stress', 'bolt'], ['Relationships', 'heart'], ['Reminders of the drug', 'eye'], ['Boredom', 'cloud'], ['Exhaustion', 'moon']];
